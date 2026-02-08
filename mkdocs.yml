@@ -1,0 +1,28 @@
+site_name: E-commerce Product Image Workflow
+site_description: Open workflow for transforming supplier product images into branded, QA-ready e-commerce assets.
+site_url: https://tytsxai.github.io/ecommerce-product-image-workflow/
+repo_url: https://github.com/tytsxai/ecommerce-product-image-workflow
+repo_name: tytsxai/ecommerce-product-image-workflow
+
+theme:
+  name: readthedocs
+
+nav:
+  - Home: index.md
+  - English:
+      - Quick Start: en/quickstart.md
+      - Workflow: en/workflow.md
+      - Quality Gate: en/quality-gate.md
+      - Compliance: en/compliance.md
+      - Contributing: en/contributing.md
+  - 中文:
+      - 中文导航: zh-CN/README.md
+      - 原始参考文档: zh-CN/reference/README.md
+
+validation:
+  nav:
+    omitted_files: ignore
+
+markdown_extensions:
+  - admonition
+  - tables

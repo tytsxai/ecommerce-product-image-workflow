@@ -1,8 +1,28 @@
 # 电商商品图片生成工作流（Phase 1：图片）
 
-[English README](README.md)
+[![文档站](https://img.shields.io/badge/文档-GitHub%20Pages-0969da?logo=github)](https://tytsxai.github.io/ecommerce-product-image-workflow/)
+[![版本](https://img.shields.io/github/v/release/tytsxai/ecommerce-product-image-workflow)](https://github.com/tytsxai/ecommerce-product-image-workflow/releases)
+[![许可证](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
+
+[English README](README.md) · [在线文档](https://tytsxai.github.io/ecommerce-product-image-workflow/) · [快速开始](docs/en/quickstart.md)
 
 一个面向非技术团队的可落地工作流：把供应商图转为可上架、可品牌化、可复核的图片资产。
+
+## 预览截图
+
+### 工作流总览（占位图）
+
+![Workflow Overview Placeholder](docs/assets/screenshots/workflow-overview.svg)
+
+### 经理输入表单（占位图）
+
+![Manager Form Placeholder](docs/assets/screenshots/manager-form-preview.svg)
+
+### 质检清单（占位图）
+
+![QA Checklist Placeholder](docs/assets/screenshots/qa-checklist-preview.svg)
+
+> 当前为占位图，后续可替换为你真实流程的截图。
 
 ## 目标
 
@@ -15,6 +35,7 @@
 
 - `docs/en/`：英文开源文档入口
 - `docs/zh-CN/`：中文说明与原始参考文档
+- `docs/assets/`：截图与可视化素材
 - `templates/`：可直接使用的表单、清单、风格包模板
 - `prompts/`：经理可复制的提示词模板
 - `examples/`：示例输入
@@ -26,6 +47,12 @@
 3. 选择 `templates/style_packs.example.json` 中的风格包
 4. 按 `templates/qa_checklist.csv` 验收
 5. 用 `templates/batch_record.csv` 记录批次
+
+## 文档站部署（GitHub Pages）
+
+- 地址：`https://tytsxai.github.io/ecommerce-product-image-workflow/`
+- 发布来源：GitHub Pages 使用 `main` 分支 `docs/` 目录
+- 本地预览：可使用 `mkdocs.yml` 本地构建
 
 ## 开源维护建议
 

@@ -1,6 +1,11 @@
 # E-commerce Product Image Workflow (Phase 1: Image Assets)
 
-[中文说明](README.zh-CN.md) · [Documentation](docs/en/quickstart.md)
+[![Docs](https://img.shields.io/badge/docs-github%20pages-0969da?logo=github)](https://tytsxai.github.io/ecommerce-product-image-workflow/)
+[![Release](https://img.shields.io/github/v/release/tytsxai/ecommerce-product-image-workflow)](https://github.com/tytsxai/ecommerce-product-image-workflow/releases)
+[![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
+[![Last Commit](https://img.shields.io/github/last-commit/tytsxai/ecommerce-product-image-workflow)](https://github.com/tytsxai/ecommerce-product-image-workflow/commits/main)
+
+[中文说明](README.zh-CN.md) · [Docs Site](https://tytsxai.github.io/ecommerce-product-image-workflow/) · [Quick Start](docs/en/quickstart.md)
 
 A practical, **non-technical-friendly workflow** for transforming supplier product images into publish-ready e-commerce assets while enforcing:
 
@@ -8,6 +13,22 @@ A practical, **non-technical-friendly workflow** for transforming supplier produ
 - **Visual differentiation** (new background/composition)
 - **Text control** (English-only output text)
 - **Reviewability** (clear QA and rejection reasons)
+
+## Screenshots
+
+### Workflow Overview
+
+![Workflow Overview Placeholder](docs/assets/screenshots/workflow-overview.svg)
+
+### Manager Input Template
+
+![Manager Form Placeholder](docs/assets/screenshots/manager-form-preview.svg)
+
+### QA Checklist Template
+
+![QA Checklist Placeholder](docs/assets/screenshots/qa-checklist-preview.svg)
+
+> These are placeholders. Replace with real screenshots from your production pipeline.
 
 ## Why this project
 
@@ -32,7 +53,8 @@ without drifting from the actual product.
 .
 ├── docs/
 │   ├── en/
-│   └── zh-CN/
+│   ├── zh-CN/
+│   └── assets/
 ├── templates/
 ├── prompts/
 ├── examples/
@@ -47,6 +69,12 @@ without drifting from the actual product.
 4. Use prompt templates under `prompts/`
 5. Validate output with `templates/qa_checklist.csv`
 6. Log each batch in `templates/batch_record.csv`
+
+## Documentation site (GitHub Pages)
+
+- Site URL: `https://tytsxai.github.io/ecommerce-product-image-workflow/`
+- Publishing source: GitHub Pages from `main` branch `docs/` folder
+- Optional local docs build: `mkdocs build` with `mkdocs.yml`
 
 ## Core principles
 
