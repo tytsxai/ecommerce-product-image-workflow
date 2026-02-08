@@ -1,0 +1,21 @@
+{
+  "version": "1.0",
+  "style_packs": [
+    {
+      "pack_id": "minimal_white",
+      "scene": "clean studio",
+      "lighting": "soft key light",
+      "tone": "neutral",
+      "props": ["white table", "soft shadow"],
+      "forbidden": ["busy texture background", "heavy reflection"]
+    },
+    {
+      "pack_id": "lifestyle_warm",
+      "scene": "home lifestyle",
+      "lighting": "warm ambient",
+      "tone": "warm",
+      "props": ["wood surface", "soft fabric"],
+      "forbidden": ["medical scene", "hard flash"]
+    }
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "batch_id": "BATCH-001",
+  "sku": "SKU-001",
+  "product_name": "Sample Product",
+  "supplier_images": [
+    "samples/sku001_front.png",
+    "samples/sku001_side.png"
+  ],
+  "style_pack_id": "minimal_white",
+  "language_input": "EN",
+  "required_outputs": ["showcase", "spec", "howto"]
+}

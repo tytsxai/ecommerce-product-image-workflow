@@ -1,0 +1,2 @@
+batch_id,sku,product_name,category,supplier_image_paths,spec_text_source,howto_text_source,style_pack_id,language_input,brand_constraints,extra_notes
+BATCH-001,SKU-001,Sample Product,home,"img/a.png;img/b.png",spec_v1.txt,howto_v1.txt,minimal_white,EN,"no medical claims",first trial

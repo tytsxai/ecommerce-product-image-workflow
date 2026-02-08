@@ -1,0 +1,6 @@
+check_id,dimension,check_item,pass_fail,notes
+Q1,product_lock,product structure unchanged,pass,
+Q2,non_duplication,background/composition clearly different,pass,
+Q3,text_rule,all text in English,pass,
+Q4,spec_accuracy,spec values/units correct,pass,
+Q5,howto_meaning,how-to meaning preserved,pass,

@@ -1,0 +1,2 @@
+batch_id,sku,image_type,output_filename,style_pack_id,version,review_result,reject_reason,reviewer,review_time
+BATCH-001,SKU-001,showcase,SKU-001_showcase_minimal_white_v1.png,minimal_white,v1,pass,,manager_a,2026-02-08T10:00:00Z
