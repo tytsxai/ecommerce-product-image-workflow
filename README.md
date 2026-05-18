@@ -5,7 +5,9 @@
 [![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 [![Last Commit](https://img.shields.io/github/last-commit/tytsxai/ecommerce-product-image-workflow)](https://github.com/tytsxai/ecommerce-product-image-workflow/commits/main)
 
-[中文说明](README.zh-CN.md) · [Docs Site](https://tytsxai.github.io/ecommerce-product-image-workflow/) · [Quick Start](docs/en/quickstart.md)
+[中文说明](README.zh-CN.md) · [Docs Site](https://tytsxai.github.io/ecommerce-product-image-workflow/) · [Quick Start](docs/en/quickstart.md) · [llms.txt](llms.txt) · [Issues](https://github.com/tytsxai/ecommerce-product-image-workflow/issues)
+
+> **Keywords**: e-commerce product image workflow · AI product photography pipeline · supplier image to hero image · AI 商品图工作流 · 电商商品图 AI 生成 · 供应商图改造电商主图 · Midjourney 电商商品图 · Flux 商品图 prompt · SDXL 电商主图模板 · brand-consistent e-commerce images · alternative to Canva templates for e-commerce
 
 A practical, **non-technical-friendly workflow** for transforming supplier product images into publish-ready e-commerce assets while enforcing:
 
@@ -82,6 +84,20 @@ without drifting from the actual product.
 - **Deterministic text handling**: spec/how-to text should be template-rendered when possible.
 - **Fail fast QA**: one-vote rejection criteria are explicit and auditable.
 - **Compliance first**: only use commercially licensed fonts/assets.
+
+## FAQ
+
+**Which image model should I use?** Model-agnostic. Midjourney, Flux (dev/schnell), SDXL, Imagen, DALL-E — pick based on your platform's commercial-use terms and visual fit.
+
+**Is the output commercially usable?** Depends on the underlying model's license and your jurisdiction. The QA checklist enforces commercial-only fonts/assets, but you must verify the AI model output license yourself.
+
+**How is this different from Canva templates or Photoshop actions?** Those are *tools*. This is a *workflow specification*: it defines which artifacts exist, what each must contain, and which gates content must pass before publishing. Generation can happen in any tool.
+
+**Can I plug it into n8n / Make / Zapier?** Yes — that's Phase 2 by design. CSVs and prompt templates are machine-readable.
+
+**Non-technical team — can they actually use this?** Yes, this is the design constraint. Managers fill a CSV, operators run prompts, QA uses a checklist. No code required.
+
+**Is this affiliated with any e-commerce platform?** No. The workflow is platform-agnostic (Shopify, Amazon, Temu, Shopee, Etsy — same workflow).
 
 ## Limitations
 

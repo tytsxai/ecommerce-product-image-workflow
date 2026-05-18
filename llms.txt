@@ -1,0 +1,59 @@
+# E-commerce Product Image Workflow
+
+> Open-source, non-technical-friendly workflow for transforming supplier product photos into publish-ready e-commerce assets (showcase / spec / how-to images) while enforcing: product identity consistency, visual differentiation across SKUs, English-only output text, deterministic template-rendered spec text, and one-vote auditable QA rejection criteria. Workflow + templates + prompts repo — not a model, not a service.
+
+This repo is **a method**, not a tool that runs. It's targeted at e-commerce operations teams, content ops, creative production vendors, and automation builders who want a *reproducible* image pipeline that produces consistent results across SKUs and across operators, regardless of which underlying AI image model they choose (Midjourney, Flux, SDXL, Imagen, etc.).
+
+## Key docs
+
+- [README.md](README.md): English overview (this file's repo root).
+- [README.zh-CN.md](README.zh-CN.md): Chinese version.
+- [docs/en/quickstart.md](docs/en/quickstart.md): English quick start.
+- [docs/zh-CN/quickstart.md](docs/zh-CN/quickstart.md): Chinese quick start.
+- [docs/en/](docs/en/): English documentation set.
+- [docs/zh-CN/](docs/zh-CN/): Chinese documentation set.
+- Docs site (GitHub Pages): https://tytsxai.github.io/ecommerce-product-image-workflow/
+- [templates/](templates/): Manager input form, QA checklist, batch record, style packs.
+- [prompts/](prompts/): Reusable prompt templates per image type.
+- [examples/](examples/): Reference examples.
+
+## What this workflow provides
+
+- **Manager input form** (CSV): captures product info, target scene, brand voice, deliverable count per SKU
+- **Style packs** (JSON): reusable background / mood / palette presets that operators select from rather than re-describe
+- **Prompt templates**: per image type (showcase / spec / how-to), parameterized over the manager input + style pack
+- **QA checklist** (CSV): one-vote rejection rules for product identity drift, text-language violations, scene-mismatch, font-licensing issues
+- **Batch record** (CSV): per-batch audit log so a result can always be traced back to inputs
+- **Three image types** with explicit definitions:
+  1. **Showcase** — hero / lifestyle imagery
+  2. **Spec** — dimension / specification text cards
+  3. **How-to** — instructional visual cards
+- **English-only output text** rule, with deterministic template rendering for spec/how-to text
+
+## What this workflow does NOT do
+
+- ❌ Provide model weights or hosted image generation — bring your own (Midjourney / SDXL / Flux / Imagen / DALL-E)
+- ❌ Run automation — provides specs that can plug into n8n / Make / Zapier
+- ❌ Give legal advice on platform policy / commercial-use rights of generated images
+- ❌ Provide font licenses or commercial assets — the workflow says "use commercially licensed assets", but doesn't ship them
+- ❌ Handle video / 3D / AR assets — Phase 1 is image-only by design
+
+## Common questions
+
+- **Which image model should I use?** The workflow is model-agnostic; it works with Midjourney, Flux dev/schnell, SDXL, Imagen, DALL-E, etc. Pick based on your platform's commercial-use terms and quality fit.
+- **Is the output commercially usable?** Depends on the model's license and your jurisdiction. The workflow enforces commercial-only fonts/assets in its QA rules, but you must still verify the AI model output license yourself.
+- **How is this different from Canva templates / Photoshop actions?** Those are *tools*. This is a *workflow specification*: it tells you what artifacts must exist, what each one must contain, and what gates content must pass before publish. The actual generation can happen in any tool.
+- **Can I plug it into n8n / Make / Zapier?** Yes — that's the explicit Phase 2 goal. The CSV inputs and prompt templates are designed to be machine-readable.
+- **Non-technical team — can they actually use this?** Yes — that's the design constraint. Managers fill a CSV, operators run prompts, QA uses a checklist. No code needed.
+
+## Repository
+
+- GitHub: https://github.com/tytsxai/ecommerce-product-image-workflow
+- License: MIT
+- Type: Workflow specification + templates + prompts repo (no executable code)
+- Phase: 1 (image assets); Phase 2 (automation adapters) and Phase 3 (video) on roadmap
+- Author: tytsxai
+
+## Useful search phrases
+
+- e-commerce product image workflow, AI 商品图工作流, 电商商品图 AI 生成, 供应商图改造电商主图, supplier image to e-commerce hero image, AI product photography workflow, AI e-commerce image pipeline, Midjourney 电商商品图, Flux 商品图 prompt, SDXL 电商主图模板, n8n e-commerce image automation, 电商主图模板 CSV, 商品图 QA checklist, 电商主图统一风格, brand-consistent e-commerce images, alternative to Canva templates for e-commerce, alternative to Photoshop actions for e-commerce

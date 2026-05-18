@@ -1,5 +1,17 @@
 # Changelog
 
+## 1.1.1 - 2026-05-19
+
+### Added (Documentation)
+
+- **`llms.txt`** — AI-search-engine index covering what the workflow provides, model-agnostic positioning, and explicit non-goals (no model weights, no automation runtime, no legal advice, no fonts/assets shipped).
+- **README — bilingual keyword block** + nav row (llms.txt / Issues).
+- **README — 6-question FAQ** clarifying model agnosticism, commercial usability caveat, Canva/Photoshop comparison, n8n/Make/Zapier integration path, platform-agnostic positioning.
+
+### Notes
+
+Documentation-only release. Templates, prompts, and QA checklist are unchanged from 1.1.0.
+
 ## 1.1.0 - 2026-02-09
 
 - Added bilingual repository badges for docs/release/license visibility.
