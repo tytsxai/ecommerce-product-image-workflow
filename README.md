@@ -114,3 +114,7 @@ without drifting from the actual product.
 ## License
 
 MIT (see `LICENSE`).
+
+## Star History
+
+[![Star History Chart](https://api.star-history.com/svg?repos=tytsxai/ecommerce-product-image-workflow&type=Date)](https://www.star-history.com/#tytsxai/ecommerce-product-image-workflow&Date)
