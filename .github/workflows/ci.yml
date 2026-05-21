@@ -1,0 +1,32 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.12", "3.13"]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Run unit tests
+        run: python -m unittest discover -s tests -p "test*.py" -v
+
+      - name: Compile check
+        run: python -m compileall -q mvp_image_workflow tests
+
+      - name: CLI smoke test
+        run: |
+          python -m mvp_image_workflow generate --input examples/products_minimum.csv --out /tmp/out_ci --batch-id CI
+          python -m mvp_image_workflow validate --out /tmp/out_ci

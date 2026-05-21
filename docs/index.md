@@ -10,6 +10,7 @@ This project helps teams convert supplier images into publish-ready e-commerce a
 - [End-to-End Workflow](en/workflow.md)
 - [Quality Gate](en/quality-gate.md)
 - [Risk & Compliance](en/compliance.md)
+- [MVP CLI](en/quickstart.md#mvp-cli-python)
 
 ## Chinese docs
 

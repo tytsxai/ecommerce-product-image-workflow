@@ -1,3 +1,21 @@
+---
+title: 经理指令模板（EN/RU 输入）
+topic: 给经理的可复制指令块（输入英语/俄语，输出文字必须英语）
+tags:
+  - 主题/AI与智能体
+  - 主题/电商
+  - 形态/模板
+summary: >
+  将“必须不改产品、必须换背景、必须英文出字”的要求写成可复制的经理指令模板（英语/俄语），便于在不同工具中复用。
+created: 2025-12-22
+updated: 2025-12-22
+stage: draft
+visibility: internal
+owner: me
+ai_include: true
+source: ""
+---
+
 # 经理指令模板（EN / RU）
 
 ## 0) 使用说明

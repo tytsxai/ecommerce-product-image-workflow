@@ -4,7 +4,7 @@
 [![版本](https://img.shields.io/github/v/release/tytsxai/ecommerce-product-image-workflow)](https://github.com/tytsxai/ecommerce-product-image-workflow/releases)
 [![许可证](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 
-[English README](README.md) · [在线文档](https://tytsxai.github.io/ecommerce-product-image-workflow/) · [快速开始](docs/en/quickstart.md)
+[English README](README.md) · [在线文档](https://tytsxai.github.io/ecommerce-product-image-workflow/) · [快速开始](docs/en/quickstart.md) · [中文参考文档](docs/zh-CN/reference/README.md)
 
 一个面向非技术团队的可落地工作流：把供应商图转为可上架、可品牌化、可复核的图片资产。
 
@@ -36,6 +36,8 @@
 - `docs/en/`：英文开源文档入口
 - `docs/zh-CN/`：中文说明与原始参考文档
 - `docs/assets/`：截图与可视化素材
+- `mvp_image_workflow/`：可运行的 Python MVP，生成每个商品的 prompt、文案源和 manifest
+- `tests/`：MVP 的基础回归测试
 - `templates/`：可直接使用的表单、清单、风格包模板
 - `prompts/`：经理可复制的提示词模板
 - `examples/`：示例输入
@@ -43,10 +45,22 @@
 ## 快速使用
 
 1. 查看 `docs/en/quickstart.md`（对外开源推荐入口）
-2. 填写 `templates/manager_input_form.csv`
+2. 填写 `templates/manager_input_form.csv` 或 `examples/products_minimum.csv`
 3. 选择 `templates/style_packs.example.json` 中的风格包
-4. 按 `templates/qa_checklist.csv` 验收
-5. 用 `templates/batch_record.csv` 记录批次
+4. 可选：运行本地 MVP 生成每个商品的 prompt/text/manifest 包
+5. 按 `templates/qa_checklist.csv` 验收
+6. 用 `templates/batch_record.csv` 记录批次
+
+## MVP CLI
+
+```bash
+python3 -m mvp_image_workflow generate \
+  --input examples/products_minimum.csv \
+  --out out_mvp \
+  --batch-id 2026-05A
+
+python3 -m mvp_image_workflow validate --out out_mvp
+```
 
 ## 文档站部署（GitHub Pages）
 

@@ -1,3 +1,21 @@
+---
+title: 需求与范围-Phase 1（图片）
+topic: Inputs/Outputs、约束、规则矩阵与验收口径
+tags:
+  - 主题/AI与智能体
+  - 主题/电商
+  - 形态/规格
+summary: >
+  把合同需求转成可执行的规格：输入输出定义、必须一致/必须不同、个性化规则、语言规则与验收标准。
+created: 2025-12-22
+updated: 2025-12-22
+stage: draft
+visibility: internal
+owner: me
+ai_include: true
+source: ""
+---
+
 # Phase 1：图片｜需求与范围
 
 ## 1. 项目目标（Project Goal）

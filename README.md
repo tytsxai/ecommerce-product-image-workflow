@@ -5,7 +5,7 @@
 [![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 [![Last Commit](https://img.shields.io/github/last-commit/tytsxai/ecommerce-product-image-workflow)](https://github.com/tytsxai/ecommerce-product-image-workflow/commits/main)
 
-[中文说明](README.zh-CN.md) · [Docs Site](https://tytsxai.github.io/ecommerce-product-image-workflow/) · [Quick Start](docs/en/quickstart.md) · [llms.txt](llms.txt) · [Issues](https://github.com/tytsxai/ecommerce-product-image-workflow/issues)
+[中文说明](README.zh-CN.md) · [Docs Site](https://tytsxai.github.io/ecommerce-product-image-workflow/) · [Quick Start](docs/en/quickstart.md) · [MVP CLI](#mvp-cli-python) · [llms.txt](llms.txt) · [Issues](https://github.com/tytsxai/ecommerce-product-image-workflow/issues)
 
 > **Keywords**: e-commerce product image workflow · AI product photography pipeline · supplier image to hero image · AI 商品图工作流 · 电商商品图 AI 生成 · 供应商图改造电商主图 · Midjourney 电商商品图 · Flux 商品图 prompt · SDXL 电商主图模板 · brand-consistent e-commerce images · alternative to Canva templates for e-commerce
 
@@ -57,6 +57,8 @@ without drifting from the actual product.
 │   ├── en/
 │   ├── zh-CN/
 │   └── assets/
+├── mvp_image_workflow/
+├── tests/
 ├── templates/
 ├── prompts/
 ├── examples/
@@ -66,11 +68,35 @@ without drifting from the actual product.
 ## Quick start
 
 1. Read `docs/en/quickstart.md`
-2. Fill `templates/manager_input_form.csv`
+2. Fill `templates/manager_input_form.csv` or `examples/products_minimum.csv`
 3. Select or edit a style pack in `templates/style_packs.example.json`
 4. Use prompt templates under `prompts/`
-5. Validate output with `templates/qa_checklist.csv`
-6. Log each batch in `templates/batch_record.csv`
+5. Optionally run the MVP CLI to generate per-product prompt/text packages
+6. Validate output with `templates/qa_checklist.csv`
+7. Log each batch in `templates/batch_record.csv`
+
+## MVP CLI (Python)
+
+Generate a per-product package from CSV:
+
+```bash
+python3 -m mvp_image_workflow generate \
+  --input examples/products_minimum.csv \
+  --out out_mvp \
+  --batch-id 2026-05A
+```
+
+Validate generated packages:
+
+```bash
+python3 -m mvp_image_workflow validate --out out_mvp
+```
+
+Validate and require expected `.png` files to exist:
+
+```bash
+python3 -m mvp_image_workflow validate --out out_mvp --require-images
+```
 
 ## Documentation site (GitHub Pages)
 

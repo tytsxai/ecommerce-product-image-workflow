@@ -13,6 +13,7 @@ Use `templates/manager_input_form.csv` and provide:
 
 This repo is tool-agnostic. You can implement pipeline via:
 
+- the local MVP CLI in this repository
 - n8n / Make / Zapier
 - internal scripts
 - manual AI tool operations
@@ -43,3 +44,26 @@ Use naming convention:
 `{sku}_{image_type}_{style_pack}_{version}.png`
 
 Log everything in `templates/batch_record.csv`.
+
+## MVP CLI (Python)
+
+Use the MVP when you want a concrete local package for each product before image generation. It creates prompt files, text-source files, expected output names, and a `manifest.json`.
+
+```bash
+python3 -m mvp_image_workflow generate \
+  --input examples/products_minimum.csv \
+  --out out_mvp \
+  --batch-id 2026-05A
+```
+
+Validate the generated package:
+
+```bash
+python3 -m mvp_image_workflow validate --out out_mvp
+```
+
+Require expected image files during final QA:
+
+```bash
+python3 -m mvp_image_workflow validate --out out_mvp --require-images
+```
