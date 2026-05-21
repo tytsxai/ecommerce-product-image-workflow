@@ -25,6 +25,7 @@ class ProductRow:
     must_avoid_elements: str | None
 
     personalization_text_en: str | None
+    source_image_paths: tuple[str, ...] = ()
 
 
 DEFAULT_STYLE_PACK = "minimal_white"

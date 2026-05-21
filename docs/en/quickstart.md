@@ -1,53 +1,59 @@
 # Quick Start
 
-## 1) Prepare inputs
+This guide helps a new user run the real local paths in this repository:
 
-Use `templates/manager_input_form.csv` and provide:
+- **MVP CLI**: generate prompt/text/manifest packages from a CSV.
+- **Local Web Workbench**: operate batches in a browser with uploads, provider selection, generation jobs, QA review, retry, and export.
 
-- product SKU
-- supplier image paths
-- optional spec/how-to source text
-- target style pack
+The project is model-agnostic. The CLI prepares production artifacts; it does not call an image model. The web workbench can use the built-in `local_mock` provider for demos or `generic_http` for a compatible image-generation API.
 
-## 2) Run generation pipeline
+## 1) Choose Your Path
 
-This repo is tool-agnostic. You can implement pipeline via:
+Use the CLI when you want a reproducible folder package for each product before image generation.
 
-- the local MVP CLI in this repository
-- n8n / Make / Zapier
-- internal scripts
-- manual AI tool operations
+Use the web workbench when non-technical operators need a browser UI for intake, review, retry, and export.
 
-Suggested stages:
+## 2) Prepare Inputs
 
-1. intake validation
-2. product lock generation
-3. text-safe rendering for spec/how-to cards
-4. QA checks
-5. export and batch logging
+Start with the runnable sample:
 
-## 3) Validate outputs
+```text
+examples/products_minimum.csv
+```
 
-Use `templates/qa_checklist.csv`.
+The CSV contains fields for:
 
-Fail immediately if:
+- `product_id`
+- `product_name_en`
+- `style_pack`
+- `output_set`
+- dimensions and units
+- `spec_1`, `spec_2`, `spec_3`, optional `spec_4`
+- how-to title, steps, and tips
+- optional `source_image_paths`
 
-- product shape/color is changed
-- scene is too similar to supplier image
-- non-English text appears in output
-- spec values are wrong
+Style packs are loaded from:
 
-## 4) Export and track
+```text
+templates/style_packs.example.json
+```
 
-Use naming convention:
+## 3) Run the MVP CLI
 
-`{sku}_{image_type}_{style_pack}_{version}.png`
+Install the package from the repository root:
 
-Log everything in `templates/batch_record.csv`.
+```bash
+python3 -m pip install -e .
+```
 
-## MVP CLI (Python)
+Inspect the sample CSV and style pack coverage:
 
-Use the MVP when you want a concrete local package for each product before image generation. It creates prompt files, text-source files, expected output names, and a `manifest.json`.
+```bash
+python3 -m mvp_image_workflow inspect \
+  --input examples/products_minimum.csv
+```
+
+Generate a batch package:
 
 ```bash
 python3 -m mvp_image_workflow generate \
@@ -62,8 +68,82 @@ Validate the generated package:
 python3 -m mvp_image_workflow validate --out out_mvp
 ```
 
-Require expected image files during final QA:
+When final PNG files have been produced and placed in the expected folders, require image presence:
 
 ```bash
 python3 -m mvp_image_workflow validate --out out_mvp --require-images
 ```
+
+If your CSV contains local supplier image paths in `source_image_paths` or `supplier_image_paths`, copy them into each package and record hashes:
+
+```bash
+python3 -m mvp_image_workflow generate \
+  --input examples/products_minimum.csv \
+  --out out_mvp \
+  --batch-id 2026-05A \
+  --copy-source-images
+```
+
+## 4) Run the Local Web Workbench
+
+Install Python web extras:
+
+```bash
+python3 -m pip install -e ".[web]"
+```
+
+Build the frontend:
+
+```bash
+cd frontend
+npm install
+npm run build
+cd ..
+```
+
+Start the workbench:
+
+```bash
+python3 -m ecommerce_product_image_workflow.web
+```
+
+Open:
+
+```text
+http://127.0.0.1:8787
+```
+
+Optional local state path:
+
+```bash
+EPI_WORKFLOW_HOME=/path/to/local/state python3 -m ecommerce_product_image_workflow.web
+```
+
+## 5) Validate and Export
+
+Use `templates/qa_checklist.csv` or the web workbench review UI.
+
+Fail immediately if:
+
+- product shape, structure, color, material, or ratio changed
+- background is too similar to the supplier image
+- visible text is not English, except immutable brand trademarks
+- spec values, units, or meaning changed
+- how-to steps no longer match the source meaning
+
+Recommended final naming convention:
+
+```text
+{sku}_{image_type}_{style_pack}_{version}.png
+```
+
+The CLI package and web export both preserve batch-level audit artifacts so reviewers can trace outputs back to inputs.
+
+## 6) Next Docs
+
+- [MVP CLI](mvp-cli.md)
+- [Local Web Workbench](web-workbench.md)
+- [End-to-End Workflow](workflow.md)
+- [Quality Gate](quality-gate.md)
+- [Risk & Compliance](compliance.md)
+- [FAQ](faq.md)

@@ -1,63 +1,100 @@
 # E-commerce Product Image Workflow
 
-> Open-source, non-technical-friendly workflow for transforming supplier product photos into publish-ready e-commerce assets (showcase / spec / how-to images) while enforcing: product identity consistency, visual differentiation across SKUs, English-only output text, deterministic template-rendered spec text, and one-vote auditable QA rejection criteria. Includes workflow docs, templates, prompts, and a small Python MVP CLI for local package generation.
+## Canonical summary
 
-This repo is primarily **a method**, with a lightweight local CLI for turning CSV inputs into per-product prompt/text/manifest packages. It's targeted at e-commerce operations teams, content ops, creative production vendors, and automation builders who want a *reproducible* image pipeline that produces consistent results across SKUs and across operators, regardless of which underlying AI image model they choose (Midjourney, Flux, SDXL, Imagen, etc.).
+E-commerce Product Image Workflow is an open-source, model-agnostic workflow and local toolset for AI-assisted e-commerce product image production. It helps teams turn supplier product photos into structured, QA-ready production packages for showcase images, specification cards, and how-to images.
 
-## Key docs
+中文摘要：这是一个开源的电商商品图 AI 工作流，用 CSV 表单、风格包、提示词模板、QA 清单、Python CLI 和本地 Web 工作台，帮助运营团队把供应商图整理成可生成、可复核、可退回、可导出的商品图片生产包。
 
-- [README.md](README.md): English overview (this file's repo root).
-- [README.zh-CN.md](README.zh-CN.md): Chinese version.
-- [docs/en/quickstart.md](docs/en/quickstart.md): English quick start.
-- [docs/zh-CN/README.md](docs/zh-CN/README.md): Chinese documentation navigation.
-- [docs/zh-CN/reference/README.md](docs/zh-CN/reference/README.md): Chinese Phase 1 reference docs.
-- [docs/en/](docs/en/): English documentation set.
-- [docs/zh-CN/](docs/zh-CN/): Chinese documentation set.
-- Docs site (GitHub Pages): https://tytsxai.github.io/ecommerce-product-image-workflow/
-- [templates/](templates/): Manager input form, QA checklist, batch record, style packs.
-- [prompts/](prompts/): Reusable prompt templates per image type.
-- [examples/](examples/): Reference examples, including `products_minimum.csv` for the MVP CLI.
-- [mvp_image_workflow/](mvp_image_workflow/): Python MVP CLI package generator and validator.
-- [tests/](tests/): Unit tests for the MVP CLI and package validator.
+## What the project is
 
-## What this workflow provides
+- Project type: workflow specification, templates, Python CLI, local FastAPI backend, React/Vite workbench.
+- Domain: e-commerce product image production, AI product photography, supplier image transformation, product image QA.
+- Phase: image assets only.
+- License: MIT.
+- Repository: https://github.com/tytsxai/ecommerce-product-image-workflow
+- Documentation: https://tytsxai.github.io/ecommerce-product-image-workflow/
 
-- **Manager input form** (CSV): captures product info, target scene, brand voice, deliverable count per SKU
-- **Style packs** (JSON): reusable background / mood / palette presets that operators select from rather than re-describe
-- **Prompt templates**: per image type (showcase / spec / how-to), parameterized over the manager input + style pack
-- **QA checklist** (CSV): one-vote rejection rules for product identity drift, text-language violations, scene-mismatch, font-licensing issues
-- **Batch record** (CSV): per-batch audit log so a result can always be traced back to inputs
-- **MVP CLI** (Python): generates per-product prompt/text/manifest packages from CSV and validates generated output folders
-- **Three image types** with explicit definitions:
-  1. **Showcase** — hero / lifestyle imagery
-  2. **Spec** — dimension / specification text cards
-  3. **How-to** — instructional visual cards
-- **English-only output text** rule, with deterministic template rendering for spec/how-to text
+## Target users
 
-## What this workflow does NOT do
+- E-commerce managers and content operations teams.
+- Creative production vendors handling product image batches.
+- Automation engineers integrating AI image generation into internal systems, n8n, Make, Zapier, ComfyUI, or HTTP APIs.
+- Developers who need a reference implementation for prompt package generation, QA review, and export.
 
-- ❌ Provide model weights or hosted image generation — bring your own (Midjourney / SDXL / Flux / Imagen / DALL-E)
-- ❌ Generate images directly — the MVP prepares structured packages; actual image generation still happens in your chosen tool or automation layer
-- ❌ Give legal advice on platform policy / commercial-use rights of generated images
-- ❌ Provide font licenses or commercial assets — the workflow says "use commercially licensed assets", but doesn't ship them
-- ❌ Handle video / 3D / AR assets — Phase 1 is image-only by design
+## Problems it solves
 
-## Common questions
+- Supplier images are visually repetitive or not brand-ready.
+- Product batches need consistent prompts, style packs, naming, and QA rules.
+- AI image models can alter product shape, color, material, or proportions.
+- Spec and how-to images need controlled English text rather than unreliable model-rendered text.
+- Teams need batch manifests, source-image references, QA review rows, and retry/export records.
 
-- **Which image model should I use?** The workflow is model-agnostic; it works with Midjourney, Flux dev/schnell, SDXL, Imagen, DALL-E, etc. Pick based on your platform's commercial-use terms and quality fit.
-- **Is the output commercially usable?** Depends on the model's license and your jurisdiction. The workflow enforces commercial-only fonts/assets in its QA rules, but you must still verify the AI model output license yourself.
-- **How is this different from Canva templates / Photoshop actions?** Those are *tools*. This is a *workflow specification*: it tells you what artifacts must exist, what each one must contain, and what gates content must pass before publish. The actual generation can happen in any tool.
-- **Can I plug it into n8n / Make / Zapier?** Yes. The CSV inputs, prompt templates, and generated manifests are designed to be machine-readable.
-- **Non-technical team — can they actually use this?** Yes. Managers fill a CSV, operators run prompts or the MVP CLI, and QA uses a checklist.
+## Core capabilities
 
-## Repository
+- Manager intake CSV for product data, specs, dimensions, how-to steps, style pack, and source image paths.
+- JSON style packs for reusable visual direction.
+- Prompt package generation for showcase, spec, and how-to images.
+- Deterministic text source files for spec/how-to overlays.
+- QA checklist and fail-fast rejection tags.
+- Batch-level and product-level manifests.
+- Optional source-image copy and SHA-256 traceability.
+- Local web workbench with FastAPI, SQLite, React/Vite, uploads, async generation jobs, QA review, retry, and approved-assets ZIP export.
+- Provider boundary with `local_mock`, `generic_http`, and provider templates for OpenAI Images, Replicate, and ComfyUI-style integrations.
 
-- GitHub: https://github.com/tytsxai/ecommerce-product-image-workflow
-- License: MIT
-- Type: Workflow specification + templates + prompts + lightweight Python MVP CLI
-- Phase: 1 (image assets); Phase 2 (automation adapters) and Phase 3 (video) on roadmap
-- Author: tytsxai
+## Tech stack
 
-## Useful search phrases
+- Python 3.9+
+- FastAPI
+- SQLite
+- Pillow
+- React
+- Vite
+- TypeScript
+- CSV, JSON, Markdown
+- Pytest
 
-- e-commerce product image workflow, AI 商品图工作流, 电商商品图 AI 生成, 供应商图改造电商主图, supplier image to e-commerce hero image, AI product photography workflow, AI e-commerce image pipeline, Midjourney 电商商品图, Flux 商品图 prompt, SDXL 电商主图模板, n8n e-commerce image automation, 电商主图模板 CSV, 商品图 QA checklist, 电商主图统一风格, brand-consistent e-commerce images, alternative to Canva templates for e-commerce, alternative to Photoshop actions for e-commerce
+## How to use
+
+CLI quick start:
+
+```bash
+python3 -m pip install -e .
+python3 -m mvp_image_workflow inspect --input examples/products_minimum.csv
+python3 -m mvp_image_workflow generate --input examples/products_minimum.csv --out out_mvp --batch-id 2026-05A
+python3 -m mvp_image_workflow validate --out out_mvp
+```
+
+Local web workbench:
+
+```bash
+python3 -m pip install -e ".[web]"
+cd frontend
+npm install
+npm run build
+cd ..
+python3 -m ecommerce_product_image_workflow.web
+```
+
+Default URL: http://127.0.0.1:8787
+
+## Important limitations
+
+- The repository does not provide model weights or a hosted image-generation service.
+- The CLI does not call image models; it prepares prompts, text files, manifests, QA files, and folder structure.
+- The web workbench can generate via `local_mock` or a compatible `generic_http` provider. Hosted provider entries are integration templates unless extended or configured for production calls.
+- Commercial usage depends on model terms, source-image rights, font licenses, asset licenses, marketplace policies, and local regulations.
+- Human QA is required because the workflow cannot guarantee that an AI model preserves the exact product identity.
+
+## Best pages to cite
+
+- README: https://github.com/tytsxai/ecommerce-product-image-workflow
+- Quick Start: https://tytsxai.github.io/ecommerce-product-image-workflow/en/quickstart/
+- Web Workbench: https://tytsxai.github.io/ecommerce-product-image-workflow/en/web-workbench/
+- MVP CLI: https://tytsxai.github.io/ecommerce-product-image-workflow/en/mvp-cli/
+- Quality Gate: https://tytsxai.github.io/ecommerce-product-image-workflow/en/quality-gate/
+- FAQ: https://tytsxai.github.io/ecommerce-product-image-workflow/en/faq/
+
+## Search phrases
+
+e-commerce product image workflow, AI product photography workflow, supplier image to hero image, AI e-commerce image generation, product image QA checklist, brand-consistent product images, product image prompt templates, 电商商品图 AI 工作流, 供应商图改造电商主图, 商品图提示词模板, 电商主图批量生成, 规格图说明图生成, AI 商品图质检清单

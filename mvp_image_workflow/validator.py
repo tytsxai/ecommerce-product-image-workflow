@@ -64,6 +64,7 @@ def validate_product_package(product_dir: str | Path, require_images: bool) -> N
         texts_dir / "howto_02.txt",
         meta_dir / "qc_checklist.json",
         meta_dir / "product.json",
+        meta_dir / "review_packet.md",
     ]
 
     missing = [str(p) for p in required_files if not p.is_file()]
@@ -90,6 +91,25 @@ def validate_product_package(product_dir: str | Path, require_images: bool) -> N
     meta_product_id = product_meta.get("product_id")
     if meta_product_id != manifest_product_id:
         raise ValidationError("meta/product.json product_id does not match manifest.json")
+
+    source_images = manifest.get("source_images", [])
+    if not isinstance(source_images, list):
+        raise ValidationError("manifest.source_images must be a list")
+    for idx, item in enumerate(source_images, start=1):
+        if not isinstance(item, dict):
+            raise ValidationError(f"manifest.source_images[{idx}] must be an object")
+        package_path = item.get("package_path")
+        if package_path is None:
+            continue
+        if not isinstance(package_path, str) or not package_path:
+            raise ValidationError(f"manifest.source_images[{idx}].package_path must be a non-empty string")
+        package_file = root / package_path
+        try:
+            package_file.resolve().relative_to(root.resolve())
+        except ValueError:
+            raise ValidationError(f"manifest.source_images[{idx}].package_path escapes product folder") from None
+        if not package_file.is_file():
+            raise ValidationError(f"manifest.source_images[{idx}].package_path points to missing file: {package_file}")
 
     paths_config = manifest.get("paths")
     if not isinstance(paths_config, dict):

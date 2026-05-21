@@ -3,7 +3,7 @@ from __future__ import annotations
 import csv
 import tempfile
 import unittest
-from contextlib import redirect_stderr
+from contextlib import redirect_stderr, redirect_stdout
 from io import StringIO
 from pathlib import Path
 
@@ -83,6 +83,120 @@ class TestMvpImageWorkflow(unittest.TestCase):
                     (product_dir / category / fname).write_bytes(b"")
 
             validate_product_package(product_dir, require_images=True)
+
+    def test_cli_generate_writes_batch_artifacts(self) -> None:
+        with tempfile.TemporaryDirectory() as td:
+            root = Path(td)
+            out_root = root / "out"
+
+            with redirect_stdout(StringIO()):
+                code = cli_main(
+                    [
+                        "generate",
+                        "--input",
+                        "examples/products_minimum.csv",
+                        "--out",
+                        str(out_root),
+                        "--batch-id",
+                        "BATCH1",
+                    ]
+                )
+            self.assertEqual(code, 0)
+            self.assertTrue((out_root / "batch_manifest.json").is_file())
+            self.assertTrue((out_root / "qa_review.csv").is_file())
+            self.assertTrue((out_root / "operator_runbook.md").is_file())
+
+            import json
+
+            batch_manifest = json.loads((out_root / "batch_manifest.json").read_text(encoding="utf-8"))
+            self.assertEqual(batch_manifest["product_count"], 1)
+
+    def test_cli_inspect_validates_style_pack_coverage(self) -> None:
+        with tempfile.TemporaryDirectory() as td:
+            root = Path(td)
+            csv_path = root / "in.csv"
+
+            with csv_path.open("w", encoding="utf-8", newline="") as f:
+                w = csv.writer(f)
+                w.writerow(
+                    [
+                        "product_id",
+                        "product_name_en",
+                        "style_pack",
+                        "output_set",
+                        "units",
+                        "spec_1",
+                        "spec_2",
+                        "spec_3",
+                        "howto_title",
+                        "step_1",
+                        "step_2",
+                        "step_3",
+                    ]
+                )
+                w.writerow(
+                    [
+                        "SKU123",
+                        "Stainless Steel Insulated Tumbler",
+                        "unknown_pack",
+                        "minimum",
+                        "cm",
+                        "Capacity: 500 ml",
+                        "Double-wall insulation",
+                        "Leak-proof lid",
+                        "How to Use",
+                        "Fill with your drink",
+                        "Close the lid firmly",
+                        "Enjoy hot or cold beverages",
+                    ]
+                )
+
+            with redirect_stderr(StringIO()):
+                code = cli_main(["inspect", "--input", str(csv_path)])
+            self.assertEqual(code, 2)
+
+    def test_generate_can_copy_source_images_and_validate_manifest_reference(self) -> None:
+        with tempfile.TemporaryDirectory() as td:
+            root = Path(td)
+            source_dir = root / "supplier"
+            source_dir.mkdir()
+            source_image = source_dir / "source A.jpg"
+            source_image.write_bytes(b"fake image bytes")
+
+            product = ProductRow(
+                product_id="SKU123",
+                product_name_en="Stainless Steel Insulated Tumbler",
+                style_pack="minimal_white",
+                output_set="minimum",
+                units="cm",
+                dimensions_l=None,
+                dimensions_w=None,
+                dimensions_h=None,
+                specs=("Capacity: 500 ml", "Double-wall insulation", "Leak-proof lid"),
+                howto_title="How to Use",
+                steps=("Fill with your drink", "Close the lid firmly", "Enjoy hot or cold beverages"),
+                tips=(),
+                manager_notes=None,
+                must_have_keywords=None,
+                must_avoid_elements=None,
+                personalization_text_en=None,
+                source_image_paths=("supplier/source A.jpg",),
+            )
+
+            product_dir = generate_product_package(
+                product,
+                root / "out",
+                batch_id=None,
+                source_base_dir=root,
+                copy_source_images=True,
+            )
+            validate_product_package(product_dir, require_images=False)
+
+            import json
+
+            manifest = json.loads((product_dir / "manifest.json").read_text(encoding="utf-8"))
+            copied_rel = manifest["source_images"][0]["package_path"]
+            self.assertTrue((product_dir / copied_rel).is_file())
 
     def test_batch_id_rejects_unsafe_characters(self) -> None:
         with tempfile.TemporaryDirectory() as td:

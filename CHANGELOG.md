@@ -1,5 +1,15 @@
 # Changelog
 
+## Unreleased
+
+### Added
+
+- Local web workbench with FastAPI, SQLite, local file storage, and React/Vite frontend.
+- Provider abstraction for `local_mock`, `generic_http`, `openai_images`, `replicate`, and `comfyui_http`.
+- Async generation jobs, QA review, retry, and approved-assets ZIP export.
+- Pillow-based deterministic text overlay for spec/how-to cards.
+- Web API tests covering batch creation, product intake, upload, generation, review, retry, export, provider config safety, and rendering.
+
 ## 1.1.1 - 2026-05-19
 
 ### Added (Documentation)

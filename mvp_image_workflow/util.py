@@ -1,7 +1,12 @@
 from __future__ import annotations
 
+import json
+import os
+import tempfile
 from dataclasses import dataclass
 from datetime import datetime, timezone
+from hashlib import sha256
+from pathlib import Path
 
 _SAFE_FILENAME_CHARS = set("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-_")
 
@@ -65,3 +70,45 @@ def safe_id(raw: str) -> str:
     s = "".join(ch for ch in s if ch in _SAFE_FILENAME_CHARS)
     return s
 
+
+def atomic_write_text(path: str | Path, content: str) -> None:
+    p = Path(path)
+    p.parent.mkdir(parents=True, exist_ok=True)
+
+    tmp_path: str | None = None
+    try:
+        with tempfile.NamedTemporaryFile(
+            "w",
+            encoding="utf-8",
+            newline="\n",
+            dir=p.parent,
+            delete=False,
+        ) as f:
+            tmp_path = f.name
+            f.write(content.rstrip() + "\n")
+        os.replace(tmp_path, p)
+    finally:
+        if tmp_path is not None and os.path.exists(tmp_path):
+            try:
+                os.unlink(tmp_path)
+            except OSError:
+                pass
+
+
+def atomic_write_json(path: str | Path, obj: object) -> None:
+    atomic_write_text(path, json.dumps(obj, ensure_ascii=False, indent=2))
+
+
+def file_sha256(path: str | Path) -> str:
+    h = sha256()
+    with Path(path).open("rb") as f:
+        for chunk in iter(lambda: f.read(1024 * 1024), b""):
+            h.update(chunk)
+    return h.hexdigest()
+
+
+def split_path_list(value: str | None) -> tuple[str, ...]:
+    v = optional_text(value)
+    if v is None:
+        return ()
+    return tuple(item.strip() for item in v.split(";") if item.strip())

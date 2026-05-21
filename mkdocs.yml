@@ -1,5 +1,5 @@
 site_name: E-commerce Product Image Workflow
-site_description: Open workflow for transforming supplier product images into branded, QA-ready e-commerce assets.
+site_description: Open-source AI e-commerce product image workflow for supplier image transformation, prompt package generation, QA review, retry, and export.
 site_url: https://tytsxai.github.io/ecommerce-product-image-workflow/
 repo_url: https://github.com/tytsxai/ecommerce-product-image-workflow
 repo_name: tytsxai/ecommerce-product-image-workflow
@@ -11,9 +11,12 @@ nav:
   - Home: index.md
   - English:
       - Quick Start: en/quickstart.md
+      - Web Workbench: en/web-workbench.md
+      - MVP CLI: en/mvp-cli.md
       - Workflow: en/workflow.md
       - Quality Gate: en/quality-gate.md
       - Compliance: en/compliance.md
+      - FAQ: en/faq.md
       - Contributing: en/contributing.md
   - 中文:
       - 中文导航: zh-CN/README.md

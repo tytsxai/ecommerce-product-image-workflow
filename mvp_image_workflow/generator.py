@@ -1,12 +1,12 @@
 from __future__ import annotations
 
 import json
-import os
-import tempfile
+import shutil
 from pathlib import Path
 
 from .batch import ProductRow
-from .util import ValidationError, now_utc_iso, safe_id
+from .stylepacks import StylePack, style_pack_prompt_lines
+from .util import ValidationError, atomic_write_json, atomic_write_text, file_sha256, now_utc_iso, safe_id
 
 
 QC_FAIL_FAST = [
@@ -29,49 +29,11 @@ QC_REJECT_TAGS = [
 
 
 def _write_text(path: Path, content: str) -> None:
-    path.parent.mkdir(parents=True, exist_ok=True)
-
-    tmp_path: str | None = None
-    try:
-        with tempfile.NamedTemporaryFile(
-            "w",
-            encoding="utf-8",
-            newline="\n",
-            dir=path.parent,
-            delete=False,
-        ) as f:
-            tmp_path = f.name
-            f.write(content.rstrip() + "\n")
-        os.replace(tmp_path, path)
-    finally:
-        if tmp_path is not None and os.path.exists(tmp_path):
-            try:
-                os.unlink(tmp_path)
-            except OSError:
-                pass
+    atomic_write_text(path, content)
 
 
 def _write_json(path: Path, obj: object) -> None:
-    path.parent.mkdir(parents=True, exist_ok=True)
-
-    tmp_path: str | None = None
-    try:
-        with tempfile.NamedTemporaryFile(
-            "w",
-            encoding="utf-8",
-            newline="\n",
-            dir=path.parent,
-            delete=False,
-        ) as f:
-            tmp_path = f.name
-            f.write(json.dumps(obj, ensure_ascii=False, indent=2) + "\n")
-        os.replace(tmp_path, path)
-    finally:
-        if tmp_path is not None and os.path.exists(tmp_path):
-            try:
-                os.unlink(tmp_path)
-            except OSError:
-                pass
+    atomic_write_json(path, obj)
 
 
 def _dimensions_line(product: ProductRow) -> str | None:
@@ -116,7 +78,94 @@ def _read_existing_manifest_product_id(product_dir: Path) -> str | None:
     return pid
 
 
-def generate_product_package(product: ProductRow, out_root: str | Path, batch_id: str | None) -> Path:
+def _source_path_is_remote(raw: str) -> bool:
+    lowered = raw.lower()
+    return lowered.startswith("http://") or lowered.startswith("https://")
+
+
+def _resolve_source_path(raw: str, source_base_dir: str | Path | None) -> Path:
+    p = Path(raw).expanduser()
+    if p.is_absolute():
+        return p
+    base = Path(source_base_dir) if source_base_dir is not None else Path.cwd()
+    return base / p
+
+
+def _safe_source_filename(index: int, src: Path) -> str:
+    stem = safe_id(src.stem) or f"source_{index:02d}"
+    suffix = src.suffix.lower()
+    if suffix not in {".jpg", ".jpeg", ".png", ".webp", ".tif", ".tiff"}:
+        suffix = ".bin"
+    return f"{index:02d}_{stem}{suffix}"
+
+
+def _collect_source_images(
+    product: ProductRow,
+    source_dir: Path,
+    *,
+    source_base_dir: str | Path | None,
+    copy_source_images: bool,
+) -> list[dict[str, object]]:
+    records: list[dict[str, object]] = []
+    for index, raw in enumerate(product.source_image_paths, start=1):
+        record: dict[str, object] = {"original_path": raw}
+        if _source_path_is_remote(raw):
+            if copy_source_images:
+                raise ValidationError(f"Cannot copy remote source image for {product.product_id}: {raw}")
+            record["type"] = "remote_reference"
+            records.append(record)
+            continue
+
+        resolved = _resolve_source_path(raw, source_base_dir)
+        record["resolved_path"] = str(resolved)
+        record["exists"] = resolved.is_file()
+        if resolved.is_file():
+            record["sha256"] = file_sha256(resolved)
+            if copy_source_images:
+                dest = source_dir / _safe_source_filename(index, resolved)
+                shutil.copy2(resolved, dest)
+                record["package_path"] = str(dest.relative_to(source_dir.parent))
+        elif copy_source_images:
+            raise ValidationError(f"Source image not found for {product.product_id}: {resolved}")
+        records.append(record)
+    return records
+
+
+def _review_packet_text(product: ProductRow, expected: dict[str, list[str]]) -> str:
+    lines = [
+        f"# QA Review Packet: {product.product_id}",
+        "",
+        f"- Product: {product.product_name_en}",
+        f"- Style pack: {product.style_pack}",
+        f"- Output set: {product.output_set}",
+        "",
+        "## Expected Outputs",
+    ]
+    for category, files in expected.items():
+        lines.append(f"### {category}")
+        lines.extend(f"- `{fname}`" for fname in files)
+    lines.extend(
+        [
+            "",
+            "## Fail-fast Rules",
+            *[f"- {item}" for item in QC_FAIL_FAST],
+            "",
+            "## Rejection Tags",
+            ", ".join(f"`{tag}`" for tag in QC_REJECT_TAGS),
+        ]
+    )
+    return "\n".join(lines)
+
+
+def generate_product_package(
+    product: ProductRow,
+    out_root: str | Path,
+    batch_id: str | None,
+    *,
+    style_pack: StylePack | None = None,
+    source_base_dir: str | Path | None = None,
+    copy_source_images: bool = False,
+) -> Path:
     root = Path(out_root)
     if root.exists() and not root.is_dir():
         raise ValidationError(f"Output root must be a directory: {root}")
@@ -169,6 +218,13 @@ def generate_product_package(product: ProductRow, out_root: str | Path, batch_id
         ],
     }
 
+    source_images = _collect_source_images(
+        product,
+        source_dir,
+        source_base_dir=source_base_dir,
+        copy_source_images=copy_source_images,
+    )
+
     # Text sources (English-only; intended to be template-rendered onto generated backgrounds).
     dims = _dimensions_line(product)
     spec_01_lines = [product.product_name_en]
@@ -203,7 +259,7 @@ def generate_product_package(product: ProductRow, out_root: str | Path, batch_id
         "- Final images must contain only English text; do not invent text.",
         "- Keep realism, correct materials, and believable shadows.",
         "",
-        f"Style pack: {product.style_pack}",
+        *style_pack_prompt_lines(style_pack, product.style_pack),
     ]
     if product.must_have_keywords:
         global_constraints.append(f"Must-have keywords (manager): {product.must_have_keywords}")
@@ -283,7 +339,7 @@ def generate_product_package(product: ProductRow, out_root: str | Path, batch_id
 
     # Meta.
     manifest = {
-        "version": "0.1.0",
+        "version": "0.2.0",
         "generated_at_utc": now_utc_iso(),
         "batch_id": safe_batch_id,
         "product": {
@@ -293,6 +349,7 @@ def generate_product_package(product: ProductRow, out_root: str | Path, batch_id
             "style_pack": product.style_pack,
             "output_set": product.output_set,
         },
+        "source_images": source_images,
         "expected_outputs": expected,
         "paths": {
             "showcase_dir": str(showcase_dir.relative_to(product_dir)),
@@ -312,6 +369,7 @@ def generate_product_package(product: ProductRow, out_root: str | Path, batch_id
         "notes": "If any fail_fast item fails, reject immediately.",
     }
     _write_json(meta_dir / "qc_checklist.json", qc)
+    _write_text(meta_dir / "review_packet.md", _review_packet_text(product, expected))
 
     product_meta = {
         "generated_at_utc": now_utc_iso(),
@@ -324,6 +382,7 @@ def generate_product_package(product: ProductRow, out_root: str | Path, batch_id
             "h": product.dimensions_h,
         },
         "has_personalization_text": bool(product.personalization_text_en),
+        "source_image_count": len(product.source_image_paths),
     }
     _write_json(meta_dir / "product.json", product_meta)
 

@@ -4,7 +4,7 @@ import csv
 from pathlib import Path
 
 from .batch import DEFAULT_OUTPUT_SET, DEFAULT_STYLE_PACK, ProductRow
-from .util import ValidationError, optional_text, require_english_text, safe_id
+from .util import ValidationError, optional_text, require_english_text, safe_id, split_path_list
 
 
 def _pick_list(prefix: str, row: dict[str, str], max_items: int) -> list[str]:
@@ -80,6 +80,9 @@ def read_products_csv(path: str | Path) -> list[ProductRow]:
                     personalization_text_en = require_english_text(
                         "personalization_text_en", personalization_text_en
                     )
+                source_image_paths = split_path_list(
+                    row.get("source_image_paths") or row.get("supplier_image_paths")
+                )
 
                 products.append(
                     ProductRow(
@@ -99,6 +102,7 @@ def read_products_csv(path: str | Path) -> list[ProductRow]:
                         must_have_keywords=must_have_keywords,
                         must_avoid_elements=must_avoid_elements,
                         personalization_text_en=personalization_text_en,
+                        source_image_paths=source_image_paths,
                     )
                 )
             except ValidationError as e:

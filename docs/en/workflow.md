@@ -3,14 +3,15 @@
 ```mermaid
 flowchart LR
     A[Supplier Images + Optional Notes] --> B[Intake Validation]
-    B --> C[Showcase Image Generation]
-    B --> D[Spec/How-to Text Extraction]
-    D --> E[Template Rendering]
-    C --> F[QA Gate]
-    E --> F
-    F -->|Pass| G[Export Assets]
-    F -->|Fail| H[Reject + Rework]
-    G --> I[Batch Record + Audit Log]
+    B --> C[Batch Package Generation]
+    C --> D[Showcase Image Generation]
+    C --> E[Spec/How-to Text Sources]
+    E --> F[Template Rendering]
+    D --> G[QA Gate]
+    F --> G
+    G -->|Pass| H[Export Assets]
+    G -->|Fail| I[Reject + Rework]
+    H --> J[QA Review + Batch Manifest]
 ```
 
 ## Design choices
@@ -18,6 +19,10 @@ flowchart LR
 - Product region protection (mask/reference lock)
 - Template-based text rendering for deterministic spec/how-to cards
 - Style packs to reduce prompt variance
+- Batch-level manifest and QA review CSV for handoff traceability
+- Optional supplier image copy + SHA-256 recording for local source audit
+- Local web workbench for intake, provider selection, async generation, QA, retry, and export
+- Provider abstraction so teams can use OpenAI, Replicate, ComfyUI, or any compatible HTTP image API
 
 ## Recommended roles
 

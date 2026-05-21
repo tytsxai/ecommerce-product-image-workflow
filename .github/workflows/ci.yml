@@ -10,7 +10,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: ["3.12", "3.13"]
+        python-version: ["3.9", "3.12", "3.13"]
 
     steps:
       - uses: actions/checkout@v4
@@ -20,13 +20,31 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
 
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Install package
+        run: python -m pip install -e ".[web]"
+
       - name: Run unit tests
         run: python -m unittest discover -s tests -p "test*.py" -v
 
       - name: Compile check
-        run: python -m compileall -q mvp_image_workflow tests
+        run: python -m compileall -q mvp_image_workflow ecommerce_product_image_workflow tests
 
       - name: CLI smoke test
         run: |
+          python -m mvp_image_workflow inspect --input examples/products_minimum.csv
           python -m mvp_image_workflow generate --input examples/products_minimum.csv --out /tmp/out_ci --batch-id CI
           python -m mvp_image_workflow validate --out /tmp/out_ci
+          ecommerce-image-workflow validate --out /tmp/out_ci
+
+      - name: Frontend build
+        run: |
+          cd frontend
+          npm ci
+          npm run build
