@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><link rel="canonical" href="https://tytsxai.github.io/ecommerce-product-image-workflow/zh-CN/reference/00-%E9%A1%B9%E7%9B%AE%E6%A6%82%E8%A7%88/" />
+      <link rel="shortcut icon" href="../../../img/favicon.ico" />
+    <title>项目概览-电商商品图片生成工作流（Phase 1：图片） - E-commerce Product Image Workflow</title>
+    <link rel="stylesheet" href="../../../css/theme.css" />
+    <link rel="stylesheet" href="../../../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "\u9879\u76ee\u6982\u89c8-\u7535\u5546\u5546\u54c1\u56fe\u7247\u751f\u6210\u5de5\u4f5c\u6d41\uff08Phase 1\uff1a\u56fe\u7247\uff09";
+        var mkdocs_page_input_path = "zh-CN/reference/00-\u9879\u76ee\u6982\u89c8.md";
+        var mkdocs_page_url = "/ecommerce-product-image-workflow/zh-CN/reference/00-%E9%A1%B9%E7%9B%AE%E6%A6%82%E8%A7%88/";
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../../../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="../../.." class="icon icon-home"> E-commerce Product Image Workflow
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../../..">Home</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">English</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../en/quickstart/">Quick Start</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../en/web-workbench/">Web Workbench</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../en/mvp-cli/">MVP CLI</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../en/workflow/">Workflow</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../en/quality-gate/">Quality Gate</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../en/compliance/">Compliance</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../en/faq/">FAQ</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../en/contributing/">Contributing</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">中文</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../">中文导航</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../">原始参考文档</a>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../..">E-commerce Product Image Workflow</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../../.." class="icon icon-home" aria-label="Docs"></a></li>
+      <li class="breadcrumb-item active">项目概览-电商商品图片生成工作流（Phase 1：图片）</li>
+    <li class="wy-breadcrumbs-aside">
+          <a href="https://github.com/tytsxai/ecommerce-product-image-workflow/edit/master/docs/zh-CN/reference/00-项目概览.md">Edit on tytsxai/ecommerce-product-image-workflow</a>
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="phase-1">项目概览（Phase 1：图片）</h1>
+<h2 id="_1">一句话目标</h2>
+<p>经理上传供应商产品图（+可选描述/参考）→ 自动产出上架所需的「主图/场景图 + 规格图 + 使用说明图」，满足“产品一致、背景明显不同、文字规则可控、可商用”的验收标准。</p>
+<h2 id="_2">范围与不范围</h2>
+<ul>
+<li>范围：图像再创作/重构（Image Re-composition），支持融合自定义文字/照片/Logo/图形；支持仅凭图片输入也可出结果。</li>
+<li>不范围（另签 Phase 2）：任何视频生成、剪辑、动效、模板化视频批处理能力。</li>
+</ul>
+<h2 id="non-negotiables">必须满足的硬约束（Non-negotiables）</h2>
+<ul>
+<li>产品本体 100% 一致：外观/结构/颜色/形状/比例不可变，真实感与比例合理。</li>
+<li>背景必须明显不同：场景、光线、构图、道具、色调需变化；不得“同背景复刻”。</li>
+<li>规格图：文本内容（数值/单位/含义）一致，但字体必须变化、背景必须变化。</li>
+<li>说明图：含义一致（可轻改写），但字体必须变化、背景必须变化。</li>
+<li>语言：经理输入（英语/俄语均可）；图片上所有文字必须为英语。</li>
+</ul>
+<h2 id="deliverables">最小交付物（Deliverables）</h2>
+<ul>
+<li>一套可运行的图片生成工作流（面向非技术用户）。</li>
+<li>一套可复用的模板/规则配置（背景、个性化内容、规格图、说明图）。</li>
+<li>用示例产品集验证的输出资产（覆盖所有类别）。</li>
+<li>使用说明（至少英文；可选俄文）。</li>
+</ul>
+<h2 id="_3">角色与责任（建议）</h2>
+<ul>
+<li>经理：上传输入、选择风格/模板、发起生成、按质检清单做最终通过/退回。</li>
+<li>运营/品牌：提供品牌色/字体偏好/禁用元素、定义风格包（Style Pack）。</li>
+<li>供应链：确认“产品本体不可变”的判定口径（哪些部件算关键结构）。</li>
+<li>实施方：搭建工作流、配置模板与质检规则、维护日志与版本。</li>
+</ul>
+<h2 id="_4">建议文档阅读顺序</h2>
+<ol>
+<li><a href="../01-%E9%9C%80%E6%B1%82%E4%B8%8E%E8%8C%83%E5%9B%B4-Phase1%E5%9B%BE%E7%89%87/">01-需求与范围-Phase1图片.md</a></li>
+<li><a href="../03-%E5%B7%A5%E4%BD%9C%E6%B5%81%E6%96%B9%E6%A1%88-%E7%AB%AF%E5%88%B0%E7%AB%AF/">03-工作流方案-端到端.md</a></li>
+<li><a href="../04-%E6%A8%A1%E6%9D%BF-%E8%A7%84%E6%A0%BC%E5%9B%BE%E4%B8%8E%E8%AF%B4%E6%98%8E%E5%9B%BE/">04-模板-规格图与说明图.md</a></li>
+<li><a href="../05-%E8%B4%A8%E6%A3%80%E4%B8%8E%E9%AA%8C%E6%94%B6%E6%B8%85%E5%8D%95/">05-质检与验收清单.md</a></li>
+<li><a href="../10-%E6%A0%B7%E4%BE%8B%E9%9B%86%E4%B8%8E%E7%B4%A0%E6%9D%90%E7%B4%A2%E5%BC%95/">10-样例集与素材索引.md</a></li>
+<li><a href="../11-%E9%A3%8E%E6%A0%BC%E5%8C%85-StylePacks/">11-风格包-StylePacks.md</a></li>
+<li><a href="../12-%E7%BB%8F%E7%90%86%E6%8C%87%E4%BB%A4%E6%A8%A1%E6%9D%BF-EN-RU/">12-经理指令模板-EN-RU.md</a></li>
+<li><a href="../13-%E7%89%88%E6%9C%AC%E4%B8%8E%E5%8F%98%E6%9B%B4%E8%AE%B0%E5%BD%95/">13-版本与变更记录.md</a></li>
+<li><a href="../14-%E7%BB%8F%E7%90%86%E4%B8%80%E9%94%AE%E7%94%9F%E6%88%90-%E6%93%8D%E4%BD%9C%E5%8D%A1%E7%89%87/">14-经理一键生成-操作卡片.md</a></li>
+<li><a href="../15-%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98%E4%B8%8E%E9%80%80%E5%9B%9E%E5%A4%84%E7%90%86/">15-常见问题与退回处理.md</a></li>
+</ol>
+              
+            </div>
+          </div><footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+        <span>
+          <a href="https://github.com/tytsxai/ecommerce-product-image-workflow" class="fa fa-code-fork" style="color: #fcfcfc"> tytsxai/ecommerce-product-image-workflow</a>
+        </span>
+    
+    
+    
+  </span>
+</div>
+    <script src="../../../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "../../..";</script>
+    <script src="../../../js/theme_extra.js"></script>
+    <script src="../../../js/theme.js"></script>
+      <script src="../../../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>

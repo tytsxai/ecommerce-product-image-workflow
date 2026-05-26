@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><link rel="canonical" href="https://tytsxai.github.io/ecommerce-product-image-workflow/zh-CN/reference/06-%E9%A3%8E%E9%99%A9%E4%B8%8E%E5%90%88%E8%A7%84/" />
+      <link rel="shortcut icon" href="../../../img/favicon.ico" />
+    <title>风险与合规（Different but Similar） - E-commerce Product Image Workflow</title>
+    <link rel="stylesheet" href="../../../css/theme.css" />
+    <link rel="stylesheet" href="../../../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "\u98ce\u9669\u4e0e\u5408\u89c4\uff08Different but Similar\uff09";
+        var mkdocs_page_input_path = "zh-CN/reference/06-\u98ce\u9669\u4e0e\u5408\u89c4.md";
+        var mkdocs_page_url = "/ecommerce-product-image-workflow/zh-CN/reference/06-%E9%A3%8E%E9%99%A9%E4%B8%8E%E5%90%88%E8%A7%84/";
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../../../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="../../.." class="icon icon-home"> E-commerce Product Image Workflow
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../../..">Home</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">English</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../en/quickstart/">Quick Start</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../en/web-workbench/">Web Workbench</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../en/mvp-cli/">MVP CLI</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../en/workflow/">Workflow</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../en/quality-gate/">Quality Gate</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../en/compliance/">Compliance</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../en/faq/">FAQ</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../en/contributing/">Contributing</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">中文</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../">中文导航</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../">原始参考文档</a>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../..">E-commerce Product Image Workflow</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../../.." class="icon icon-home" aria-label="Docs"></a></li>
+      <li class="breadcrumb-item active">风险与合规（Different but Similar）</li>
+    <li class="wy-breadcrumbs-aside">
+          <a href="https://github.com/tytsxai/ecommerce-product-image-workflow/edit/master/docs/zh-CN/reference/06-风险与合规.md">Edit on tytsxai/ecommerce-product-image-workflow</a>
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="_1">风险与合规</h1>
+<h2 id="1">1) 目标边界（本项目的合规诉求）</h2>
+<ul>
+<li>不是“完全不同”，而是“不同但相似”：保留产品本体一致性，改变背景/构图/字体/视觉语言，避免供应商图复刻。</li>
+<li>输出要可商用：避免使用无授权素材（背景图库、字体、图标、照片等）。</li>
+</ul>
+<h2 id="2">2) 主要风险点</h2>
+<ul>
+<li>复刻风险：背景/构图过于接近供应商图，可能被判定为抄袭或平台重复图。</li>
+<li>产品改形风险：生成模型误改产品形态，导致售后/投诉或误导性宣传。</li>
+<li>字体与素材授权风险：字体/图标/图库无授权导致商用侵权。</li>
+<li>个性化内容“不同但相似”的解释风险：过近会侵权，过远会不满足“相似语义”要求。</li>
+</ul>
+<h2 id="3">3) 建议的衡量与留痕</h2>
+<ul>
+<li>人工审查：以 <code>05-质检与验收清单</code> 为最终口径。</li>
+<li>留痕建议（最小即可）：</li>
+<li>供应商原图哈希/文件名</li>
+<li>生成版本号（风格包、模板版本）</li>
+<li>关键输入（经理选择项、个性化素材引用）</li>
+<li>导出清单（每张图的类别与文件名）</li>
+<li>推荐载体：用 <a href="../19-%E7%94%9F%E6%88%90%E6%89%B9%E6%AC%A1%E8%AE%B0%E5%BD%95-%E7%BB%8F%E7%90%86%E5%A1%AB%E5%86%99/">19-生成批次记录-经理填写.md</a> 做最小留痕；版本号约定见 <a href="../13-%E7%89%88%E6%9C%AC%E4%B8%8E%E5%8F%98%E6%9B%B4%E8%AE%B0%E5%BD%95/">13-版本与变更记录.md</a></li>
+</ul>
+<h2 id="4">4) 运营侧“禁用清单”（建议建立）</h2>
+<ul>
+<li>禁用背景元素：可能引发误导或合规风险的道具/场景（如医疗器械误用场景）。</li>
+<li>禁用文案：夸大、违规功效、平台敏感词（按平台政策维护）。</li>
+</ul>
+<h2 id="5">5) 字体与素材授权（建议策略）</h2>
+<ul>
+<li>字体：建立“可商用字体白名单”（并保留授权证明/来源链接）。</li>
+<li>图标/背景素材：仅使用可商用资产库或自建资产。</li>
+<li>经理上传素材：需要在表单中勾选“已获授权/自有版权”。</li>
+<li>建议在批次记录中注明本次使用的字体/素材来源（最低可写为“白名单字体/图库：<name>”）。</li>
+</ul>
+              
+            </div>
+          </div><footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+        <span>
+          <a href="https://github.com/tytsxai/ecommerce-product-image-workflow" class="fa fa-code-fork" style="color: #fcfcfc"> tytsxai/ecommerce-product-image-workflow</a>
+        </span>
+    
+    
+    
+  </span>
+</div>
+    <script src="../../../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "../../..";</script>
+    <script src="../../../js/theme_extra.js"></script>
+    <script src="../../../js/theme.js"></script>
+      <script src="../../../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>

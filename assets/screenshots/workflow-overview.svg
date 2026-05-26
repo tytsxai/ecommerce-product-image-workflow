@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="675" viewBox="0 0 1200 675" role="img" aria-label="Workflow overview placeholder">
+  <rect width="1200" height="675" fill="#0f172a"/>
+  <rect x="40" y="40" width="1120" height="595" rx="16" fill="#111827" stroke="#334155"/>
+  <text x="70" y="110" fill="#e2e8f0" font-family="Arial, sans-serif" font-size="42" font-weight="700">Workflow Overview (Placeholder)</text>
+  <text x="70" y="160" fill="#94a3b8" font-family="Arial, sans-serif" font-size="24">Supplier Images → Generation → QA Gate → Export</text>
+  <rect x="70" y="210" width="220" height="120" rx="10" fill="#1d4ed8"/>
+  <rect x="340" y="210" width="220" height="120" rx="10" fill="#7c3aed"/>
+  <rect x="610" y="210" width="220" height="120" rx="10" fill="#0ea5e9"/>
+  <rect x="880" y="210" width="220" height="120" rx="10" fill="#059669"/>
+  <text x="95" y="280" fill="#fff" font-family="Arial, sans-serif" font-size="22">Input</text>
+  <text x="380" y="280" fill="#fff" font-family="Arial, sans-serif" font-size="22">Generate</text>
+  <text x="680" y="280" fill="#fff" font-family="Arial, sans-serif" font-size="22">QA</text>
+  <text x="955" y="280" fill="#fff" font-family="Arial, sans-serif" font-size="22">Export</text>
+  <path d="M290 270 L340 270" stroke="#94a3b8" stroke-width="6" marker-end="url(#a)"/>
+  <path d="M560 270 L610 270" stroke="#94a3b8" stroke-width="6" marker-end="url(#a)"/>
+  <path d="M830 270 L880 270" stroke="#94a3b8" stroke-width="6" marker-end="url(#a)"/>
+  <defs>
+    <marker id="a" markerWidth="12" markerHeight="12" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L9,3 z" fill="#94a3b8"/>
+    </marker>
+  </defs>
+  <text x="70" y="590" fill="#64748b" font-family="Arial, sans-serif" font-size="20">Replace with real screenshots after first production run.</text>
+</svg>

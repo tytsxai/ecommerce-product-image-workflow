@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><link rel="canonical" href="https://tytsxai.github.io/ecommerce-product-image-workflow/zh-CN/reference/15-%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98%E4%B8%8E%E9%80%80%E5%9B%9E%E5%A4%84%E7%90%86/" />
+      <link rel="shortcut icon" href="../../../img/favicon.ico" />
+    <title>常见问题与退回处理（经理版） - E-commerce Product Image Workflow</title>
+    <link rel="stylesheet" href="../../../css/theme.css" />
+    <link rel="stylesheet" href="../../../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "\u5e38\u89c1\u95ee\u9898\u4e0e\u9000\u56de\u5904\u7406\uff08\u7ecf\u7406\u7248\uff09";
+        var mkdocs_page_input_path = "zh-CN/reference/15-\u5e38\u89c1\u95ee\u9898\u4e0e\u9000\u56de\u5904\u7406.md";
+        var mkdocs_page_url = "/ecommerce-product-image-workflow/zh-CN/reference/15-%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98%E4%B8%8E%E9%80%80%E5%9B%9E%E5%A4%84%E7%90%86/";
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../../../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="../../.." class="icon icon-home"> E-commerce Product Image Workflow
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../../..">Home</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">English</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../en/quickstart/">Quick Start</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../en/web-workbench/">Web Workbench</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../en/mvp-cli/">MVP CLI</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../en/workflow/">Workflow</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../en/quality-gate/">Quality Gate</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../en/compliance/">Compliance</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../en/faq/">FAQ</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../en/contributing/">Contributing</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">中文</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../">中文导航</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../">原始参考文档</a>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../..">E-commerce Product Image Workflow</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../../.." class="icon icon-home" aria-label="Docs"></a></li>
+      <li class="breadcrumb-item active">常见问题与退回处理（经理版）</li>
+    <li class="wy-breadcrumbs-aside">
+          <a href="https://github.com/tytsxai/ecommerce-product-image-workflow/edit/master/docs/zh-CN/reference/15-常见问题与退回处理.md">Edit on tytsxai/ecommerce-product-image-workflow</a>
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="_1">常见问题与退回处理（经理版）</h1>
+<h2 id="1-product_changed">1) product_changed（产品变形/结构不一致）</h2>
+<p>可能原因：
+- 生成触碰了产品区域（没锁住主体）
+- 供应商图角度/清晰度不足
+你下一步怎么做：
+- 换一张更清晰、更正面的供应商图重新上传（尽量白底/棚拍）。
+- 选择更“保守”的风格包（如 <code>minimal_white</code>）。
+- 降低场景复杂度（少道具、少强光影），再生成一次。</p>
+<h2 id="2-background_too_similar">2) background_too_similar（背景太像供应商图）</h2>
+<p>可能原因：
+- 同类背景变体不足或构图未变化
+你下一步怎么做：
+- 换风格包或同风格包的另一个背景变体。
+- 强制变化构图：更换留白方向、镜头距离、摆放位置。</p>
+<h2 id="3-spec_value_error">3) spec_value_error（规格数值/单位错误）</h2>
+<p>可能原因：
+- OCR 识别错、或模型“出字”不稳定
+你下一步怎么做：
+- 在表单 <code>C1</code> 手动补齐 Specs 文本源（英文）并作为唯一来源，再生成。
+- 优先使用模板化文字渲染（不让模型自由出字）。</p>
+<h2 id="4-howto_meaning_changed">4) howto_meaning_changed（说明步骤含义变了）</h2>
+<p>你下一步怎么做：
+- 在表单 <code>C1</code> 手动填 Steps/Tips（英文短句），再生成。
+- 退回时标注“哪一步含义不一致”，便于直接修正对应字段。</p>
+<h2 id="5-text_not_english">5) text_not_english（文字非英文/拼写问题）</h2>
+<p>你下一步怎么做：
+- 重新生成；若仍出现，改用表单 <code>C1</code> 的固定英文文本源。
+- 禁止输出任何非英文字符（尤其是俄语）。</p>
+<h2 id="6-personalization_rule_violation">6) personalization_rule_violation（个性化规则不符合）</h2>
+<p>你下一步怎么做：
+- 照片：换一张“不同但相似”的照片（同主题/风格，不是同图裁剪/调色）。
+- 文字：改文案内容，但保持同字体/同字号（同一产品/同一批次）。
+- 图形/Logo：换同类别/同风格但不同图形（不是简单换色/镜像）。</p>
+              
+            </div>
+          </div><footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+        <span>
+          <a href="https://github.com/tytsxai/ecommerce-product-image-workflow" class="fa fa-code-fork" style="color: #fcfcfc"> tytsxai/ecommerce-product-image-workflow</a>
+        </span>
+    
+    
+    
+  </span>
+</div>
+    <script src="../../../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "../../..";</script>
+    <script src="../../../js/theme_extra.js"></script>
+    <script src="../../../js/theme.js"></script>
+      <script src="../../../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>

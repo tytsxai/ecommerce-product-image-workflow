@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><link rel="canonical" href="https://tytsxai.github.io/ecommerce-product-image-workflow/zh-CN/reference/01-%E9%9C%80%E6%B1%82%E4%B8%8E%E8%8C%83%E5%9B%B4-Phase1%E5%9B%BE%E7%89%87/" />
+      <link rel="shortcut icon" href="../../../img/favicon.ico" />
+    <title>需求与范围-Phase 1（图片） - E-commerce Product Image Workflow</title>
+    <link rel="stylesheet" href="../../../css/theme.css" />
+    <link rel="stylesheet" href="../../../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "\u9700\u6c42\u4e0e\u8303\u56f4-Phase 1\uff08\u56fe\u7247\uff09";
+        var mkdocs_page_input_path = "zh-CN/reference/01-\u9700\u6c42\u4e0e\u8303\u56f4-Phase1\u56fe\u7247.md";
+        var mkdocs_page_url = "/ecommerce-product-image-workflow/zh-CN/reference/01-%E9%9C%80%E6%B1%82%E4%B8%8E%E8%8C%83%E5%9B%B4-Phase1%E5%9B%BE%E7%89%87/";
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../../../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="../../.." class="icon icon-home"> E-commerce Product Image Workflow
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../../..">Home</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">English</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../en/quickstart/">Quick Start</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../en/web-workbench/">Web Workbench</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../en/mvp-cli/">MVP CLI</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../en/workflow/">Workflow</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../en/quality-gate/">Quality Gate</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../en/compliance/">Compliance</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../en/faq/">FAQ</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../en/contributing/">Contributing</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">中文</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../">中文导航</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../">原始参考文档</a>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../..">E-commerce Product Image Workflow</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../../.." class="icon icon-home" aria-label="Docs"></a></li>
+      <li class="breadcrumb-item active">需求与范围-Phase 1（图片）</li>
+    <li class="wy-breadcrumbs-aside">
+          <a href="https://github.com/tytsxai/ecommerce-product-image-workflow/edit/master/docs/zh-CN/reference/01-需求与范围-Phase1图片.md">Edit on tytsxai/ecommerce-product-image-workflow</a>
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="phase-1">Phase 1：图片｜需求与范围</h1>
+<h2 id="1-project-goal">1. 项目目标（Project Goal）</h2>
+<p>为网店建立 AI 驱动的商品图片生成工作流：以供应商产品照片为输入，自动生成“可商用、品牌化、与供应商图明显不同、但产品本体保持一致”的图片资产。</p>
+<h2 id="2-scope">2. 范围（Scope）</h2>
+<h3 id="21-phase-1">2.1 本阶段交付（Phase 1：图片）</h3>
+<ul>
+<li>图像生成/再创作工作流（Image Re-composition Workflow）。</li>
+<li>支持将自定义内容（文字/照片/Logo/图形）融入生成图中。</li>
+<li>支持生成：主图/场景图、尺寸规格图、使用说明/How-to 图。</li>
+</ul>
+<h3 id="22-phase-2">2.2 不在本阶段（Phase 2：视频）</h3>
+<ul>
+<li>任何视频生成、剪辑、动效、视频模板化、视频批处理能力。</li>
+</ul>
+<h2 id="3">3. 输入输出定义</h2>
+<h3 id="31-inputs">3.1 输入（Inputs）</h3>
+<ul>
+<li>供应商产品图片（必需）</li>
+<li>产品 1–4：供应商图 +（可能有）描述 + 期望输出示例</li>
+<li>产品 5–8：仅供应商图</li>
+<li>个性化定制信息（按订单类型变化）</li>
+<li>自定义照片（用户上传）</li>
+<li>自定义文字（用户提供）</li>
+<li>自定义 Logo / 图形（用户提供）</li>
+<li>语言要求</li>
+<li>经理输入 AI 指令：英语 / 俄语</li>
+<li>生成图片上的文字：必须为英语</li>
+</ul>
+<h3 id="32-outputs">3.2 输出（Outputs）</h3>
+<p>对每个产品，至少包含以下类别（数量可按上架模板扩展）：
+- 主图/场景图（Product Showcase Images）
+- 产品尺寸规格图（Size / Specs Images）
+- 如何使用/产品说明图（How-to / Instruction Images）</p>
+<h2 id="4-non-negotiable-constraints">4. 核心约束（Non-negotiable Constraints）</h2>
+<h3 id="41-must-stay-the-same">4.1 必须保持相同（Must Stay the Same）</h3>
+<ul>
+<li>产品本体保持一致：外观、结构、颜色、形状不允许改变；真实感与比例合理。</li>
+<li>规格图：文字内容（数值/尺寸/单位/含义）保持一致（字体必须变化、背景必须变化）。</li>
+<li>说明图：文字含义保持一致（可轻微改写）（字体必须变化、背景必须变化）。</li>
+</ul>
+<h3 id="42-must-be-different">4.2 必须不同（Must Be Different）</h3>
+<ul>
+<li>背景必须不同：可同类风格，但不得同背景/同构图复刻。</li>
+<li>个性化内容必须“不同但相似（Different but Similar）”</li>
+<li>自定义照片：不同照片，但风格/语义相近</li>
+<li>自定义文字：文案不同，但字体与字号一致</li>
+<li>自定义图形/Logo：不同图形，但风格/轮廓/类别相似</li>
+</ul>
+<h2 id="5">5. 视觉规则矩阵（对齐甲方原文）</h2>
+<table>
+<thead>
+<tr>
+<th>模块</th>
+<th>目标</th>
+<th>保持</th>
+<th>改变</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>产品本体</td>
+<td>100% 一致</td>
+<td>外观/比例/材质观感</td>
+<td>不允许改变</td>
+</tr>
+<tr>
+<td>背景</td>
+<td>明显不同</td>
+<td>可保持同类风格</td>
+<td>场景/光线/构图/道具/色调变化</td>
+</tr>
+<tr>
+<td>个性化照片</td>
+<td>不同但相似</td>
+<td>主题/风格一致</td>
+<td>换成另一张相似照片</td>
+</tr>
+<tr>
+<td>个性化文字</td>
+<td>不同但一致</td>
+<td>字体与字号一致</td>
+<td>文案内容不同</td>
+</tr>
+<tr>
+<td>个性化图形/Logo</td>
+<td>不同但相似</td>
+<td>视觉类别/风格一致</td>
+<td>图形本身不同</td>
+</tr>
+<tr>
+<td>尺寸规格图</td>
+<td>信息一致</td>
+<td>文本内容一致</td>
+<td>字体不同 + 背景不同</td>
+</tr>
+<tr>
+<td>使用说明图</td>
+<td>含义一致</td>
+<td>含义/步骤一致</td>
+<td>措辞轻改 + 字体不同 + 背景不同</td>
+</tr>
+</tbody>
+</table>
+<h2 id="6">6. 工作流设计要求（面向非技术经理）</h2>
+<ul>
+<li>最优：单次上传供应商图 → 自动生成全部目标图片。</li>
+<li>若无法完全自动化：采用最少步骤（上传 → 选择模板/风格 → 一键生成）。</li>
+<li>可扩展：支持仅凭图片也能生成合格输出；描述仅作辅助。</li>
+<li>多语言：经理可用英语或俄语输入；所有出图文案统一英文。</li>
+</ul>
+<h2 id="7-acceptance-criteria">7. 质量验收标准（Acceptance Criteria）</h2>
+<h3 id="71-product-lock">7.1 产品一致性（Product Lock）</h3>
+<ul>
+<li>对比供应商图：应可判定为“同一款产品”。</li>
+<li>不允许：形态变化、关键结构缺失、图案错位、比例失真。</li>
+</ul>
+<h3 id="72-non-duplication">7.2 差异化（Non-duplication）</h3>
+<ul>
+<li>对比供应商图：背景/构图/视觉语言必须明显不同。</li>
+<li>不允许：直接抠图 + 同背景复刻、同角度同摆放的近似复制。</li>
+</ul>
+<h3 id="73">7.3 个性化规则符合性</h3>
+<ul>
+<li>照片/图形：满足“不同但相似”。</li>
+<li>文字：内容不同，但字体/字号一致。</li>
+<li>输出文字为英文。</li>
+</ul>
+<h3 id="74">7.4 规格图/说明图规则符合性</h3>
+<ul>
+<li>规格图：文本内容一致；字体不同；背景不同。</li>
+<li>说明图：含义一致；措辞轻改；字体不同；背景不同。</li>
+</ul>
+<h2 id="8">8. 风险点（必须写清）</h2>
+<ul>
+<li>“产品不变”与“背景显著不同”冲突：需要可靠的产品保护/锁定策略。</li>
+<li>仅图片输入泛化难：品类越多越依赖模板化/规则化。</li>
+<li>字体/字号稳定性：需明确字体来源与渲染方式（建议模板渲染，而非纯 AI 出字）。</li>
+<li>合规目标是“不同但相似”：需明确衡量方式（人工规则/阈值/日志留痕）。</li>
+</ul>
+              
+            </div>
+          </div><footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+        <span>
+          <a href="https://github.com/tytsxai/ecommerce-product-image-workflow" class="fa fa-code-fork" style="color: #fcfcfc"> tytsxai/ecommerce-product-image-workflow</a>
+        </span>
+    
+    
+    
+  </span>
+</div>
+    <script src="../../../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "../../..";</script>
+    <script src="../../../js/theme_extra.js"></script>
+    <script src="../../../js/theme.js"></script>
+      <script src="../../../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>

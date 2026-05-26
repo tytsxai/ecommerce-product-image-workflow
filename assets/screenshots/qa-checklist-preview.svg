@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="675" viewBox="0 0 1200 675" role="img" aria-label="QA checklist placeholder">
+  <rect width="1200" height="675" fill="#020617"/>
+  <rect x="60" y="40" width="1080" height="595" rx="16" fill="#111827" stroke="#334155"/>
+  <text x="100" y="100" fill="#e5e7eb" font-family="Arial, sans-serif" font-size="34" font-weight="700">QA Checklist (Placeholder)</text>
+  <text x="100" y="140" fill="#9ca3af" font-family="Arial, sans-serif" font-size="22">Template: templates/qa_checklist.csv</text>
+  <rect x="100" y="180" width="1000" height="54" fill="#1f2937"/>
+  <rect x="100" y="236" width="1000" height="54" fill="#111827"/>
+  <rect x="100" y="292" width="1000" height="54" fill="#1f2937"/>
+  <rect x="100" y="348" width="1000" height="54" fill="#111827"/>
+  <rect x="100" y="404" width="1000" height="54" fill="#1f2937"/>
+  <circle cx="1040" cy="208" r="14" fill="#16a34a"/>
+  <circle cx="1040" cy="264" r="14" fill="#16a34a"/>
+  <circle cx="1040" cy="320" r="14" fill="#16a34a"/>
+  <circle cx="1040" cy="376" r="14" fill="#dc2626"/>
+  <circle cx="1040" cy="432" r="14" fill="#16a34a"/>
+</svg>

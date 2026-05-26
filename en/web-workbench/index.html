@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><link rel="canonical" href="https://tytsxai.github.io/ecommerce-product-image-workflow/en/web-workbench/" />
+      <link rel="shortcut icon" href="../../img/favicon.ico" />
+    <title>Web Workbench - E-commerce Product Image Workflow</title>
+    <link rel="stylesheet" href="../../css/theme.css" />
+    <link rel="stylesheet" href="../../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Web Workbench";
+        var mkdocs_page_input_path = "en/web-workbench.md";
+        var mkdocs_page_url = "/ecommerce-product-image-workflow/en/web-workbench/";
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="../.." class="icon icon-home"> E-commerce Product Image Workflow
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../..">Home</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">English</span></p>
+              <ul class="current">
+                  <li class="toctree-l1"><a class="reference internal" href="../quickstart/">Quick Start</a>
+                  </li>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="#">Web Workbench</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#run-locally">Run Locally</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#operator-flow">Operator Flow</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#built-in-providers">Built-in Providers</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#api-surface">API Surface</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#qa-and-rendering">QA and Rendering</a>
+    </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../mvp-cli/">MVP CLI</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../workflow/">Workflow</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../quality-gate/">Quality Gate</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../compliance/">Compliance</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../faq/">FAQ</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../contributing/">Contributing</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">中文</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../zh-CN/">中文导航</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../zh-CN/reference/">原始参考文档</a>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../..">E-commerce Product Image Workflow</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../.." class="icon icon-home" aria-label="Docs"></a></li>
+          <li class="breadcrumb-item">English</li>
+      <li class="breadcrumb-item active">Web Workbench</li>
+    <li class="wy-breadcrumbs-aside">
+          <a href="https://github.com/tytsxai/ecommerce-product-image-workflow/edit/master/docs/en/web-workbench.md">Edit on tytsxai/ecommerce-product-image-workflow</a>
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="local-web-workbench">Local Web Workbench</h1>
+<p>The web workbench is the product-facing layer for non-technical operators. It keeps the existing CLI/package contract, but wraps it in a local UI for intake, model selection, generation, QA review, retry, and export.</p>
+<h2 id="run-locally">Run Locally</h2>
+<p>Install the Python web extras:</p>
+<pre><code class="language-bash">python3 -m pip install -e &quot;.[web]&quot;
+</code></pre>
+<p>Build the frontend once:</p>
+<pre><code class="language-bash">cd frontend
+npm install
+npm run build
+cd ..
+</code></pre>
+<p>Start the local workbench:</p>
+<pre><code class="language-bash">python3 -m ecommerce_product_image_workflow.web
+</code></pre>
+<p>Default URL: <code>http://127.0.0.1:8787</code></p>
+<p>Use <code>EPI_WORKFLOW_HOME=/path/to/local/state</code> to choose where SQLite data, uploads, generated assets, and exports are stored.</p>
+<h2 id="operator-flow">Operator Flow</h2>
+<ol>
+<li>Create or open a batch.</li>
+<li>Add a product with SKU, English name, specs, steps, and style pack.</li>
+<li>Upload supplier/source images.</li>
+<li>Choose a provider and model.</li>
+<li>Click Generate.</li>
+<li>Review generated assets against supplier images.</li>
+<li>Pass, reject, or retry individual assets.</li>
+<li>Export QA-approved assets as a ZIP.</li>
+</ol>
+<p>The main UI uses product language: project, batch, product, style, model, generation, review, export. Manifest files and prompt paths remain available as technical artifacts, but are not required for ordinary operation.</p>
+<h2 id="built-in-providers">Built-in Providers</h2>
+<ul>
+<li><code>local_mock</code>: offline placeholder image generator for demo and tests.</li>
+<li><code>generic_http</code>: configurable HTTP image API adapter for custom or self-hosted models.</li>
+<li><code>openai_images</code>: provider metadata/template for OpenAI image models.</li>
+<li><code>replicate</code>: provider metadata/template for Replicate-hosted models.</li>
+<li><code>comfyui_http</code>: provider metadata/template for local or server-hosted ComfyUI.</li>
+</ul>
+<p>Only <code>local_mock</code> and <code>generic_http</code> are directly runnable without extending provider code. The hosted provider entries are intentionally present as integration starting points so teams can wire their own production API contracts without storing raw secrets in exported workflow files.</p>
+<p>For <code>generic_http</code>, configure:</p>
+<pre><code class="language-json">{
+  &quot;endpoint_url&quot;: &quot;https://example.com/generate&quot;,
+  &quot;api_key_env&quot;: &quot;MY_IMAGE_API_KEY&quot;,
+  &quot;response_image_field&quot;: &quot;image_base64&quot;
+}
+</code></pre>
+<p>Raw API keys must not be sent in the UI JSON. Store keys in environment variables and reference them through <code>api_key_env</code>.</p>
+<h2 id="api-surface">API Surface</h2>
+<p>The workbench exposes:</p>
+<ul>
+<li><code>POST /api/batches</code></li>
+<li><code>POST /api/batches/{id}/products</code></li>
+<li><code>POST /api/products/{id}/source-images</code></li>
+<li><code>GET /api/style-packs</code></li>
+<li><code>GET /api/providers</code></li>
+<li><code>POST /api/providers/test</code></li>
+<li><code>POST /api/batches/{id}/generate</code></li>
+<li><code>GET /api/jobs/{id}</code></li>
+<li><code>POST /api/assets/{id}/review</code></li>
+<li><code>POST /api/assets/{id}/retry</code></li>
+<li><code>POST /api/batches/{id}/export</code></li>
+</ul>
+<p>Jobs use these statuses: <code>queued</code>, <code>running</code>, <code>succeeded</code>, <code>failed</code>, <code>cancelled</code>.</p>
+<h2 id="qa-and-rendering">QA and Rendering</h2>
+<p>Showcase images are saved directly from the selected provider.</p>
+<p>Spec and how-to outputs are rendered with a deterministic local text overlay using Pillow. The model generates the product/background layer; the workflow renders English text from the product package text sources.</p>
+<p>The export ZIP includes only QA-approved assets plus batch manifest, QA review CSV, and a short operator runbook.</p>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../quickstart/" class="btn btn-neutral float-left" title="Quick Start"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../mvp-cli/" class="btn btn-neutral float-right" title="MVP CLI">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+        <span>
+          <a href="https://github.com/tytsxai/ecommerce-product-image-workflow" class="fa fa-code-fork" style="color: #fcfcfc"> tytsxai/ecommerce-product-image-workflow</a>
+        </span>
+    
+    
+      <span><a href="../quickstart/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../mvp-cli/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script src="../../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "../..";</script>
+    <script src="../../js/theme_extra.js"></script>
+    <script src="../../js/theme.js"></script>
+      <script src="../../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><link rel="canonical" href="https://tytsxai.github.io/ecommerce-product-image-workflow/zh-CN/reference/11-%E9%A3%8E%E6%A0%BC%E5%8C%85-StylePacks/" />
+      <link rel="shortcut icon" href="../../../img/favicon.ico" />
+    <title>风格包（Style Packs） - E-commerce Product Image Workflow</title>
+    <link rel="stylesheet" href="../../../css/theme.css" />
+    <link rel="stylesheet" href="../../../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "\u98ce\u683c\u5305\uff08Style Packs\uff09";
+        var mkdocs_page_input_path = "zh-CN/reference/11-\u98ce\u683c\u5305-StylePacks.md";
+        var mkdocs_page_url = "/ecommerce-product-image-workflow/zh-CN/reference/11-%E9%A3%8E%E6%A0%BC%E5%8C%85-StylePacks/";
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../../../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="../../.." class="icon icon-home"> E-commerce Product Image Workflow
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../../..">Home</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">English</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../en/quickstart/">Quick Start</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../en/web-workbench/">Web Workbench</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../en/mvp-cli/">MVP CLI</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../en/workflow/">Workflow</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../en/quality-gate/">Quality Gate</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../en/compliance/">Compliance</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../en/faq/">FAQ</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../en/contributing/">Contributing</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">中文</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../">中文导航</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../">原始参考文档</a>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../..">E-commerce Product Image Workflow</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../../.." class="icon icon-home" aria-label="Docs"></a></li>
+      <li class="breadcrumb-item active">风格包（Style Packs）</li>
+    <li class="wy-breadcrumbs-aside">
+          <a href="https://github.com/tytsxai/ecommerce-product-image-workflow/edit/master/docs/zh-CN/reference/11-风格包-StylePacks.md">Edit on tytsxai/ecommerce-product-image-workflow</a>
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="style-packs">风格包（Style Packs）</h1>
+<h2 id="1">1) 风格包的目标</h2>
+<ul>
+<li>让经理只做“选择题”：选风格包 → 一键生成全部图片。</li>
+<li>降低复刻风险：同一风格包也应内置多个背景变体，避免“同一套背景反复套用”。</li>
+<li>与品类解耦：风格包描述背景与光影，不描述会改变产品形态的内容。</li>
+</ul>
+<h2 id="2">2) 配置结构（建议字段）</h2>
+<ul>
+<li><code>pack_id</code>：唯一标识（如 <code>minimal_white</code>）</li>
+<li><code>name</code>：给经理看的名称</li>
+<li><code>scene_type</code>：studio / indoor / outdoor / lifestyle</li>
+<li><code>palette</code>：主色/辅色（建议与品牌色兼容）</li>
+<li><code>lighting</code>：softbox / daylight / side light / rim light</li>
+<li><code>props_allowlist</code>：可用道具清单</li>
+<li><code>props_blocklist</code>：禁用道具清单</li>
+<li><code>composition_rules</code>：构图规则（留白方向、产品摆放区域）</li>
+<li><code>background_variants</code>：至少 3 个变体（材质/色调/构图不同）</li>
+<li><code>negative_rules</code>：强制避免项（避免让模型改产品）</li>
+</ul>
+<p>变体命名建议（便于复盘，不强制）
+- <code>background_variants</code> 用稳定 ID：如 <code>mw_v1_purewhite</code>、<code>mw_v2_lightgradient</code>、<code>mw_v3_papertexture</code>
+- 批次记录建议写入所用变体 ID：见 <a href="../19-%E7%94%9F%E6%88%90%E6%89%B9%E6%AC%A1%E8%AE%B0%E5%BD%95-%E7%BB%8F%E7%90%86%E5%A1%AB%E5%86%99/">19-生成批次记录-经理填写.md</a></p>
+<h2 id="3">3) 推荐起步风格包（示例）</h2>
+<h3 id="a-minimal_white">A) <code>minimal_white</code>（干净主图/规格图友好）</h3>
+<ul>
+<li>scene：studio</li>
+<li>palette：white / light gray / brand accent</li>
+<li>lighting：soft, even</li>
+<li>背景变体：纯白、浅灰渐变、细微纸纹</li>
+<li>禁用：强纹理、复杂道具、强反射地面</li>
+<li>negative_rules（示例）："do not change product shape/structure/color; keep logos/patterns unchanged; do not add/remove parts"</li>
+</ul>
+<h3 id="b-lifestyle_warm">B) <code>lifestyle_warm</code>（生活方式场景图）</h3>
+<ul>
+<li>scene：indoor lifestyle</li>
+<li>palette：warm neutral（米色/浅木色）</li>
+<li>lighting：warm daylight</li>
+<li>道具：杯子、书、植物（按品类裁剪）</li>
+<li>禁用：可引发误导的“功效场景”</li>
+<li>negative_rules（示例）：同上；另加 "avoid hands/people holding the product unless explicitly required"</li>
+</ul>
+<h3 id="c-premium_dark">C) <code>premium_dark</code>（高端暗调）</h3>
+<ul>
+<li>scene：studio / premium interior</li>
+<li>palette：charcoal / deep navy + subtle highlight</li>
+<li>lighting：rim light / controlled highlights</li>
+<li>禁用：过度反光导致产品材质跑偏</li>
+<li>negative_rules（示例）：同上；另加 "avoid mirror-like surfaces that distort edges"</li>
+</ul>
+<h2 id="4">4) 与模板联动</h2>
+<ul>
+<li><code>showcase</code>：风格包主导背景与道具变化。</li>
+<li><code>spec/howto</code>：风格包提供“简洁背景变体”，文字层由模板渲染保证一致性。</li>
+</ul>
+              
+            </div>
+          </div><footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+        <span>
+          <a href="https://github.com/tytsxai/ecommerce-product-image-workflow" class="fa fa-code-fork" style="color: #fcfcfc"> tytsxai/ecommerce-product-image-workflow</a>
+        </span>
+    
+    
+    
+  </span>
+</div>
+    <script src="../../../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "../../..";</script>
+    <script src="../../../js/theme_extra.js"></script>
+    <script src="../../../js/theme.js"></script>
+      <script src="../../../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>
