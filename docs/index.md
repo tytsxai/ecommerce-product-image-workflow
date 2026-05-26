@@ -23,6 +23,10 @@ It helps teams convert supplier product photos and product data into structured 
 - [Risk & Compliance](en/compliance.md)
 - [FAQ](en/faq.md)
 
+## Docs deployment
+
+The public documentation site is built from `mkdocs.yml` and deployed to GitHub Pages by the `Deploy Docs` workflow.
+
 ## Chinese docs
 
 - [中文导航](zh-CN/README.md)
