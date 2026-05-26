@@ -25,7 +25,7 @@ It helps teams convert supplier product photos and product data into structured 
 
 ## Docs deployment
 
-The public documentation site is built from `mkdocs.yml` and deployed to GitHub Pages by the `Deploy Docs` workflow.
+The public documentation site is built from `mkdocs.yml` and deployed to GitHub Pages by the `Deploy Docs` workflow after changes land on `main`.
 
 ## Chinese docs
 
