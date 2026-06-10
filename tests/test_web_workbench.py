@@ -1,11 +1,11 @@
 from __future__ import annotations
 
-import base64
 import os
 import tempfile
 import time
 import unittest
 import zipfile
+from io import BytesIO
 from pathlib import Path
 
 from fastapi.testclient import TestClient
@@ -19,6 +19,27 @@ from mvp_image_workflow.util import ValidationError
 
 
 class TestWebWorkbench(unittest.TestCase):
+    def _create_batch_with_product(self, client: TestClient) -> tuple[int, int]:
+        batch_id = client.post(
+            "/api/batches",
+            json={"project_name": "Demo Store", "batch_name": "May Launch"},
+        ).json()["batch"]["id"]
+        product_resp = client.post(
+            f"/api/batches/{batch_id}/products",
+            json={
+                "product_id": "SKU123",
+                "product_name_en": "Stainless Steel Insulated Tumbler",
+                "style_pack": "minimal_white",
+                "units": "cm",
+                "dimensions": {"l": "20", "w": "8", "h": "8"},
+                "specs": ["Capacity: 500 ml", "Double-wall insulation", "Leak-proof lid"],
+                "steps": ["Fill with your drink", "Close the lid firmly", "Enjoy hot or cold beverages"],
+                "tips": ["Hand wash recommended"],
+            },
+        )
+        self.assertEqual(product_resp.status_code, 200, product_resp.text)
+        return batch_id, product_resp.json()["product"]["id"]
+
     def test_provider_summary_redacts_secret_like_fields(self) -> None:
         summary = safe_response_summary(
             {
@@ -79,32 +100,11 @@ class TestWebWorkbench(unittest.TestCase):
         with tempfile.TemporaryDirectory() as td:
             app = create_app(storage_root=td)
             client = TestClient(app)
-            created = client.post(
-                "/api/batches",
-                json={"project_name": "Demo Store", "batch_name": "May Launch"},
-            )
-            self.assertEqual(created.status_code, 200, created.text)
-            batch_id = created.json()["batch"]["id"]
+            batch_id, product_pk = self._create_batch_with_product(client)
 
-            product_resp = client.post(
-                f"/api/batches/{batch_id}/products",
-                json={
-                    "product_id": "SKU123",
-                    "product_name_en": "Stainless Steel Insulated Tumbler",
-                    "style_pack": "minimal_white",
-                    "units": "cm",
-                    "dimensions": {"l": "20", "w": "8", "h": "8"},
-                    "specs": ["Capacity: 500 ml", "Double-wall insulation", "Leak-proof lid"],
-                    "steps": ["Fill with your drink", "Close the lid firmly", "Enjoy hot or cold beverages"],
-                    "tips": ["Hand wash recommended"],
-                },
-            )
-            self.assertEqual(product_resp.status_code, 200, product_resp.text)
-            product_pk = product_resp.json()["product"]["id"]
-
-            source_bytes = base64.b64decode(
-                "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+/p9sAAAAASUVORK5CYII="
-            )
+            source_buffer = BytesIO()
+            Image.new("RGB", (1, 1), "white").save(source_buffer, format="PNG")
+            source_bytes = source_buffer.getvalue()
             upload = client.post(
                 f"/api/products/{product_pk}/source-images",
                 files={"file": ("source.png", source_bytes, "image/png")},
@@ -150,6 +150,12 @@ class TestWebWorkbench(unittest.TestCase):
             retry = client.post(f"/api/assets/{first_asset_id}/retry")
             self.assertEqual(retry.status_code, 200, retry.text)
             app.state.runtime.jobs.join()
+            after_retry = client.get(f"/api/batches/{batch_id}").json()
+            new_retry_assets = [asset for asset in after_retry["assets"] if asset["version"] == 2]
+            self.assertEqual(len(new_retry_assets), 1)
+            original_asset = next(asset for asset in after_retry["assets"] if asset["id"] == first_asset_id)
+            self.assertNotEqual(new_retry_assets[0]["path"], original_asset["path"])
+            self.assertTrue(Path(original_asset["path"]).is_file())
 
             exported = client.post(f"/api/batches/{batch_id}/export")
             self.assertEqual(exported.status_code, 200, exported.text)
@@ -164,14 +170,13 @@ class TestWebWorkbench(unittest.TestCase):
             exported_get = client.get(f"/api/batches/{batch_id}/export")
             self.assertEqual(exported_get.status_code, 200, exported_get.text)
 
-    def test_api_rejects_raw_provider_secrets(self) -> None:
+    def test_api_rejects_duplicate_product_id_and_active_batch_generation(self) -> None:
         with tempfile.TemporaryDirectory() as td:
-            client = TestClient(create_app(storage_root=td))
-            batch_id = client.post(
-                "/api/batches",
-                json={"project_name": "Demo Store", "batch_name": "Secrets"},
-            ).json()["batch"]["id"]
-            client.post(
+            app = create_app(storage_root=td)
+            client = TestClient(app)
+            batch_id, _product_pk = self._create_batch_with_product(client)
+
+            duplicate = client.post(
                 f"/api/batches/{batch_id}/products",
                 json={
                     "product_id": "SKU123",
@@ -181,6 +186,101 @@ class TestWebWorkbench(unittest.TestCase):
                     "steps": ["Fill with your drink", "Close the lid firmly", "Enjoy hot or cold beverages"],
                 },
             )
+            self.assertEqual(duplicate.status_code, 409)
+
+            original_enqueue = app.state.runtime.enqueue
+            app.state.runtime.enqueue = lambda job_id: None
+            try:
+                first = client.post(
+                    f"/api/batches/{batch_id}/generate",
+                    json={"provider_id": "local_mock", "model": "local-placeholder"},
+                )
+                self.assertEqual(first.status_code, 200, first.text)
+                self.assertEqual(len(first.json()["jobs"]), 7)
+
+                second = client.post(
+                    f"/api/batches/{batch_id}/generate",
+                    json={"provider_id": "local_mock", "model": "local-placeholder"},
+                )
+                self.assertEqual(second.status_code, 409)
+            finally:
+                app.state.runtime.enqueue = original_enqueue
+
+    def test_api_skips_generation_slots_that_already_succeeded(self) -> None:
+        with tempfile.TemporaryDirectory() as td:
+            app = create_app(storage_root=td)
+            client = TestClient(app)
+            batch_id, _product_pk = self._create_batch_with_product(client)
+
+            first = client.post(
+                f"/api/batches/{batch_id}/generate",
+                json={"provider_id": "local_mock", "model": "local-placeholder"},
+            )
+            self.assertEqual(first.status_code, 200, first.text)
+            app.state.runtime.jobs.join()
+
+            second = client.post(
+                f"/api/batches/{batch_id}/generate",
+                json={"provider_id": "local_mock", "model": "local-placeholder"},
+            )
+            self.assertEqual(second.status_code, 200, second.text)
+            self.assertEqual(second.json()["jobs"], [])
+
+    def test_api_rejects_invalid_source_image_upload(self) -> None:
+        with tempfile.TemporaryDirectory() as td:
+            client = TestClient(create_app(storage_root=td))
+            _batch_id, product_pk = self._create_batch_with_product(client)
+
+            unsupported = client.post(
+                f"/api/products/{product_pk}/source-images",
+                files={"file": ("source.txt", b"not an image", "text/plain")},
+            )
+            self.assertEqual(unsupported.status_code, 400)
+
+            unreadable = client.post(
+                f"/api/products/{product_pk}/source-images",
+                files={"file": ("source.png", b"not an image", "image/png")},
+            )
+            self.assertEqual(unreadable.status_code, 400)
+
+    def test_export_uses_latest_review_decision(self) -> None:
+        with tempfile.TemporaryDirectory() as td:
+            app = create_app(storage_root=td)
+            client = TestClient(app)
+            batch_id, _product_pk = self._create_batch_with_product(client)
+
+            generated = client.post(
+                f"/api/batches/{batch_id}/generate",
+                json={"provider_id": "local_mock", "model": "local-placeholder"},
+            )
+            self.assertEqual(generated.status_code, 200, generated.text)
+            app.state.runtime.jobs.join()
+            batch = client.get(f"/api/batches/{batch_id}").json()
+            asset = batch["assets"][0]
+
+            passed = client.post(
+                f"/api/assets/{asset['id']}/review",
+                json={"decision": "pass", "reviewer": "manager_a", "notes": "Looks good"},
+            )
+            self.assertEqual(passed.status_code, 200, passed.text)
+            rejected = client.post(
+                f"/api/assets/{asset['id']}/review",
+                json={"decision": "reject", "reject_tag": "product_changed", "reviewer": "manager_a"},
+            )
+            self.assertEqual(rejected.status_code, 200, rejected.text)
+
+            exported = client.post(f"/api/batches/{batch_id}/export")
+            self.assertEqual(exported.status_code, 200, exported.text)
+            zip_path = Path(td) / "latest-review-export.zip"
+            zip_path.write_bytes(exported.content)
+            with zipfile.ZipFile(zip_path) as zf:
+                names = set(zf.namelist())
+            self.assertNotIn(f"assets/{asset['filename']}", names)
+
+    def test_api_rejects_raw_provider_secrets(self) -> None:
+        with tempfile.TemporaryDirectory() as td:
+            client = TestClient(create_app(storage_root=td))
+            batch_id, _product_pk = self._create_batch_with_product(client)
             resp = client.post(
                 f"/api/batches/{batch_id}/generate",
                 json={"provider_id": "generic_http", "model": "demo", "config": {"api_key": "raw-secret"}},

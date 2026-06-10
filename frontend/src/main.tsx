@@ -66,16 +66,31 @@ function App() {
   const [productForm, setProductForm] = React.useState(defaultProduct);
   const [selectedProductId, setSelectedProductId] = React.useState<number | null>(null);
   const [message, setMessage] = React.useState("");
+  const [busyAction, setBusyAction] = React.useState<string | null>(null);
 
   React.useEffect(() => {
-    void bootstrap();
+    void bootstrap().catch((error: unknown) => setMessage(errorMessage(error)));
   }, []);
 
   React.useEffect(() => {
     if (!batch?.batch.id) return;
-    const timer = window.setInterval(() => void refreshBatch(batch.batch.id), 1500);
+    const timer = window.setInterval(() => {
+      void refreshBatch(batch.batch.id).catch((error: unknown) => setMessage(errorMessage(error)));
+    }, 1500);
     return () => window.clearInterval(timer);
   }, [batch?.batch.id]);
+
+  async function runAction(actionName: string, action: () => Promise<void>) {
+    if (busyAction) return;
+    setBusyAction(actionName);
+    try {
+      await action();
+    } catch (error) {
+      setMessage(errorMessage(error));
+    } finally {
+      setBusyAction(null);
+    }
+  }
 
   async function bootstrap() {
     const [providerData, styleData, batchesData] = await Promise.all([
@@ -123,7 +138,8 @@ function App() {
     if (!selectedProductId || !batch) return;
     const form = new FormData();
     form.append("file", file);
-    await fetch(`/api/products/${selectedProductId}/source-images`, { method: "POST", body: form });
+    const res = await fetch(`/api/products/${selectedProductId}/source-images`, { method: "POST", body: form });
+    if (!res.ok) throw new Error(await responseErrorText(res));
     await refreshBatch(batch.batch.id);
     setMessage("Source image uploaded.");
   }
@@ -137,12 +153,12 @@ function App() {
       setMessage("Provider config must be valid JSON.");
       return;
     }
-    await api(`/api/batches/${batch.batch.id}/generate`, {
+    const data = await api<{ jobs: Job[] }>(`/api/batches/${batch.batch.id}/generate`, {
       method: "POST",
       body: JSON.stringify({ provider_id: providerId, model, config })
     });
     await refreshBatch(batch.batch.id);
-    setMessage("Generation queued.");
+    setMessage(data.jobs.length ? "Generation queued." : "All generation slots already have successful assets.");
   }
 
   async function review(assetId: number, decision: "pass" | "reject") {
@@ -157,17 +173,22 @@ function App() {
       })
     });
     await refreshBatch(batch.batch.id);
+    setMessage(decision === "pass" ? "Asset approved." : "Asset rejected.");
   }
 
   async function retry(assetId: number) {
     if (!batch) return;
     await api(`/api/assets/${assetId}/retry`, { method: "POST" });
     await refreshBatch(batch.batch.id);
+    setMessage("Retry queued.");
   }
 
   const selectedProduct = batch?.products.find((p) => p.id === selectedProductId) || batch?.products[0];
   const sourceImage = selectedProduct?.source_images[0];
   const approved = batch?.assets.filter((a) => a.reviews[0]?.decision === "pass").length || 0;
+  const activeJobs = batch?.jobs.some((job) => job.status === "queued" || job.status === "running") || false;
+  const busy = busyAction !== null;
+  const canGenerate = Boolean(batch?.products.length) && !activeJobs && !busy;
 
   return (
     <main className="shell">
@@ -179,8 +200,8 @@ function App() {
             <span>Local AI workbench</span>
           </div>
         </div>
-        <button onClick={createBatch}><PackagePlus size={17} /> New batch</button>
-        <button onClick={generate} disabled={!batch?.products.length}><Play size={17} /> Generate</button>
+        <button onClick={() => void runAction("createBatch", createBatch)} disabled={busy}><PackagePlus size={17} /> New batch</button>
+        <button onClick={() => void runAction("generate", generate)} disabled={!canGenerate}><Play size={17} /> Generate</button>
         <a className="button" href={batch ? `/api/batches/${batch.batch.id}/export` : "#"}>
           <Download size={17} /> Export approved
         </a>
@@ -212,8 +233,8 @@ function App() {
             </label>
             <label>Specs<textarea value={productForm.specs.join("\n")} onChange={(e) => setProductForm({ ...productForm, specs: splitLines(e.target.value) })} /></label>
             <label>Steps<textarea value={productForm.steps.join("\n")} onChange={(e) => setProductForm({ ...productForm, steps: splitLines(e.target.value) })} /></label>
-            <button onClick={addProduct}><PackagePlus size={17} /> Add product</button>
-            <label className="upload"><Upload size={18} /> Upload supplier image<input type="file" accept="image/*" onChange={(e) => e.target.files?.[0] && void uploadSource(e.target.files[0])} /></label>
+            <button onClick={() => void runAction("addProduct", addProduct)} disabled={busy}><PackagePlus size={17} /> Add product</button>
+            <label className={`upload ${busy ? "disabled" : ""}`}><Upload size={18} /> Upload supplier image<input type="file" accept="image/*" disabled={busy} onChange={(e) => e.target.files?.[0] && void runAction("uploadSource", () => uploadSource(e.target.files![0]))} /></label>
           </div>
 
           <div className="panel production">
@@ -251,15 +272,15 @@ function App() {
                     <strong>{asset.category}</strong>
                     <span>{asset.reviews[0]?.decision || "unreviewed"}</span>
                   </div>
-                  <button title="Pass" onClick={() => void review(asset.id, "pass")}><Check size={16} /></button>
-                  <button title="Reject" onClick={() => void review(asset.id, "reject")}><X size={16} /></button>
-                  <button title="Retry" onClick={() => void retry(asset.id)}><RefreshCw size={16} /></button>
+                  <button title="Pass" disabled={busy} onClick={() => void runAction("reviewPass", () => review(asset.id, "pass"))}><Check size={16} /></button>
+                  <button title="Reject" disabled={busy} onClick={() => void runAction("reviewReject", () => review(asset.id, "reject"))}><X size={16} /></button>
+                  <button title="Retry" disabled={busy} onClick={() => void runAction("retry", () => retry(asset.id))}><RefreshCw size={16} /></button>
                 </article>
               ))}
             </div>
           </div>
         </section>
-        <footer>{message || "Ready. Create or open a batch, add products, choose a provider, then generate."}</footer>
+        <footer>{busyAction ? "Working..." : message || "Ready. Create or open a batch, add products, choose a provider, then generate."}</footer>
       </section>
     </main>
   );
@@ -267,8 +288,23 @@ function App() {
 
 async function api<T>(url: string, init?: RequestInit): Promise<T> {
   const res = await fetch(url, { headers: { "Content-Type": "application/json", ...(init?.headers || {}) }, ...init });
-  if (!res.ok) throw new Error(await res.text());
+  if (!res.ok) throw new Error(await responseErrorText(res));
   return res.json();
+}
+
+async function responseErrorText(res: Response): Promise<string> {
+  const text = await res.text();
+  try {
+    const parsed = JSON.parse(text) as { detail?: unknown };
+    if (typeof parsed.detail === "string") return parsed.detail;
+  } catch {
+    // Fall back to the raw response body below.
+  }
+  return text || `${res.status} ${res.statusText}`;
+}
+
+function errorMessage(error: unknown): string {
+  return error instanceof Error ? error.message : "Request failed.";
 }
 
 function splitLines(value: string): string[] {

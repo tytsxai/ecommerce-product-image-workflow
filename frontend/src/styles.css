@@ -74,6 +74,7 @@ input, textarea, select {
 }
 textarea { min-height: 88px; resize: vertical; }
 .upload { border: 1px dashed #94a3b8; padding: 12px; align-items: center; grid-template-columns: auto 1fr; cursor: pointer; }
+.upload.disabled { opacity: 0.45; cursor: not-allowed; }
 .upload input { display: none; }
 
 .modelRow { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }

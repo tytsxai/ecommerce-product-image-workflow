@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import sqlite3
+from contextlib import closing
 from pathlib import Path
 from typing import Any
 
@@ -114,25 +115,27 @@ class Database:
         self.init()
 
     def connect(self) -> sqlite3.Connection:
-        conn = sqlite3.connect(self.path, check_same_thread=False)
+        conn = sqlite3.connect(self.path, timeout=30, check_same_thread=False)
         conn.row_factory = sqlite3.Row
+        conn.execute("PRAGMA foreign_keys = ON")
         return conn
 
     def init(self) -> None:
-        with self.connect() as conn:
+        with closing(self.connect()) as conn:
             conn.executescript(SCHEMA)
+            conn.commit()
 
     def execute(self, sql: str, params: tuple[Any, ...] = ()) -> int:
-        with self.connect() as conn:
+        with closing(self.connect()) as conn:
             cur = conn.execute(sql, params)
             conn.commit()
             return int(cur.lastrowid)
 
     def query_one(self, sql: str, params: tuple[Any, ...] = ()) -> dict[str, Any] | None:
-        with self.connect() as conn:
+        with closing(self.connect()) as conn:
             row = conn.execute(sql, params).fetchone()
             return dict(row) if row else None
 
     def query_all(self, sql: str, params: tuple[Any, ...] = ()) -> list[dict[str, Any]]:
-        with self.connect() as conn:
+        with closing(self.connect()) as conn:
             return [dict(row) for row in conn.execute(sql, params).fetchall()]

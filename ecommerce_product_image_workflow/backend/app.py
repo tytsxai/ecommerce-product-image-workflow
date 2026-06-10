@@ -1,24 +1,26 @@
 from __future__ import annotations
 
 import json
+import logging
 import os
 import queue
 import threading
-import time
 import zipfile
-from io import StringIO
+from io import BytesIO, StringIO
 from pathlib import Path
 from typing import Any
+from uuid import uuid4
 
 from fastapi import FastAPI, File, HTTPException, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
+from PIL import Image, UnidentifiedImageError
 
 from mvp_image_workflow.batch import ProductRow
 from mvp_image_workflow.generator import QC_REJECT_TAGS, generate_product_package
 from mvp_image_workflow.stylepacks import default_style_pack_path, load_style_packs
-from mvp_image_workflow.util import ValidationError, file_sha256, now_utc_iso, safe_id
+from mvp_image_workflow.util import ValidationError, file_sha256, now_utc_iso, require_english_text, safe_id
 
 from ecommerce_product_image_workflow.backend.db import Database
 from ecommerce_product_image_workflow.backend.rendering import render_text_overlay
@@ -27,6 +29,10 @@ from ecommerce_product_image_workflow.providers.base import GenerateRequest
 
 
 JOB_STATUSES = {"queued", "running", "succeeded", "failed", "cancelled"}
+ACTIVE_JOB_STATUSES = {"queued", "running"}
+MAX_SOURCE_IMAGE_BYTES = 10 * 1024 * 1024
+ALLOWED_SOURCE_IMAGE_SUFFIXES = {".jpg", ".jpeg", ".png", ".webp", ".tif", ".tiff"}
+logger = logging.getLogger(__name__)
 
 
 class WorkbenchRuntime:
@@ -35,6 +41,7 @@ class WorkbenchRuntime:
         self.storage_root.mkdir(parents=True, exist_ok=True)
         self.db = Database(self.storage_root / "workflow.sqlite3")
         self.jobs: "queue.Queue[int]" = queue.Queue()
+        self.mutation_lock = threading.Lock()
         self.thread = threading.Thread(target=self._worker_loop, daemon=True)
         self.thread.start()
 
@@ -51,7 +58,7 @@ class WorkbenchRuntime:
 
     def run_job(self, job_id: int) -> None:
         job = self.db.query_one("SELECT * FROM generation_jobs WHERE id = ?", (job_id,))
-        if not job or job["status"] == "cancelled":
+        if not job or job["status"] != "queued":
             return
         self.db.execute(
             "UPDATE generation_jobs SET status = 'running', updated_at = CURRENT_TIMESTAMP WHERE id = ?",
@@ -72,10 +79,11 @@ class WorkbenchRuntime:
             package_dir = self._package_dir(int(job["batch_id"]))
             product_dir = package_dir / safe_id(product["product_id"])
             expected_filename = _expected_filename(job, product)
-            final_path = product_dir / job["category"] / expected_filename
+            version = _next_asset_version(self.db, int(job["product_pk"]), job["category"], expected_filename)
+            final_path = _asset_output_path(product_dir, job["category"], expected_filename, version)
             background_path = final_path
             if job["category"] in {"spec", "howto"}:
-                background_path = product_dir / "meta" / "backgrounds" / expected_filename
+                background_path = _background_output_path(product_dir, job["category"], expected_filename, version)
 
             provider_result = provider.generate(
                 GenerateRequest(
@@ -96,7 +104,6 @@ class WorkbenchRuntime:
                     output_path=final_path,
                 )
 
-            version = _next_asset_version(self.db, int(job["product_pk"]), job["category"], expected_filename)
             asset_id = self.db.execute(
                 """
                 INSERT INTO generated_assets
@@ -127,6 +134,7 @@ class WorkbenchRuntime:
                 (asset_id, job_id),
             )
         except Exception as e:
+            logger.exception("Generation job %s failed", job_id)
             self.db.execute(
                 """
                 UPDATE generation_jobs
@@ -227,26 +235,34 @@ def create_app(storage_root: str | Path | None = None) -> FastAPI:
             row = _product_row_from_payload(payload)
         except ValidationError as e:
             raise HTTPException(status_code=400, detail=str(e))
-        product_pk = runtime.db.execute(
-            """
-            INSERT INTO products
-              (batch_id, product_id, product_name_en, style_pack, output_set, units,
-               dimensions_json, specs_json, steps_json, tips_json)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-            """,
-            (
-                batch_id,
-                row.product_id,
-                row.product_name_en,
-                row.style_pack,
-                row.output_set,
-                row.units,
-                json.dumps({"l": row.dimensions_l, "w": row.dimensions_w, "h": row.dimensions_h}),
-                json.dumps(list(row.specs), ensure_ascii=False),
-                json.dumps(list(row.steps), ensure_ascii=False),
-                json.dumps(list(row.tips), ensure_ascii=False),
-            ),
-        )
+        _ensure_known_style_pack(row.style_pack)
+        with runtime.mutation_lock:
+            existing = runtime.db.query_one(
+                "SELECT id FROM products WHERE batch_id = ? AND product_id = ?",
+                (batch_id, row.product_id),
+            )
+            if existing:
+                raise HTTPException(status_code=409, detail="product_id already exists in this batch")
+            product_pk = runtime.db.execute(
+                """
+                INSERT INTO products
+                  (batch_id, product_id, product_name_en, style_pack, output_set, units,
+                   dimensions_json, specs_json, steps_json, tips_json)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                """,
+                (
+                    batch_id,
+                    row.product_id,
+                    row.product_name_en,
+                    row.style_pack,
+                    row.output_set,
+                    row.units,
+                    json.dumps({"l": row.dimensions_l, "w": row.dimensions_w, "h": row.dimensions_h}),
+                    json.dumps(list(row.specs), ensure_ascii=False),
+                    json.dumps(list(row.steps), ensure_ascii=False),
+                    json.dumps(list(row.tips), ensure_ascii=False),
+                ),
+            )
         return {"product": _product_payload(runtime, product_pk)}
 
     @app.post("/api/products/{product_pk}/source-images")
@@ -254,11 +270,15 @@ def create_app(storage_root: str | Path | None = None) -> FastAPI:
         product = runtime.db.query_one("SELECT id FROM products WHERE id = ?", (product_pk,))
         if not product:
             raise HTTPException(status_code=404, detail="Product not found")
+        suffix = _validated_image_suffix(file.filename or "")
+        data = await file.read(MAX_SOURCE_IMAGE_BYTES + 1)
+        if len(data) > MAX_SOURCE_IMAGE_BYTES:
+            raise HTTPException(status_code=413, detail="Source image exceeds 10 MB limit")
+        _verify_image_upload(data)
         safe_name = safe_id(Path(file.filename or "source").stem) or "source"
-        suffix = Path(file.filename or "").suffix.lower() or ".bin"
-        target = runtime.storage_root / "uploads" / str(product_pk) / f"{int(time.time() * 1000)}_{safe_name}{suffix}"
+        target = runtime.storage_root / "uploads" / str(product_pk) / f"{uuid4().hex}_{safe_name}{suffix}"
         target.parent.mkdir(parents=True, exist_ok=True)
-        target.write_bytes(await file.read())
+        target.write_bytes(data)
         digest = file_sha256(target)
         image_id = runtime.db.execute(
             "INSERT INTO source_images (product_pk, filename, path, sha256) VALUES (?, ?, ?, ?)",
@@ -279,30 +299,39 @@ def create_app(storage_root: str | Path | None = None) -> FastAPI:
         if not products:
             raise HTTPException(status_code=400, detail="Batch has no products")
         jobs: list[dict[str, Any]] = []
-        for product in products:
-            row = _product_row_from_db(runtime, product)
-            product_dir = generate_product_package(
-                row,
-                runtime._package_dir(batch_id),
-                batch_id=f"B{batch_id}",
-                source_base_dir=runtime.storage_root,
-                copy_source_images=False,
-            )
-            prompt_map = _prompt_map(product_dir)
-            for category in ("showcase", "spec", "howto"):
-                for slot in range(1, 4 if category == "showcase" else 3):
-                    prompt = prompt_map[(category, slot)].read_text(encoding="utf-8")
-                    job_id = runtime.db.execute(
-                        """
-                        INSERT INTO generation_jobs
-                          (batch_id, product_pk, category, slot, status, provider_id, model, prompt, config_json)
-                        VALUES (?, ?, ?, ?, 'queued', ?, ?, ?, ?)
-                        """,
-                        (batch_id, product["id"], category, slot, provider_id, model, prompt, json.dumps(config)),
-                    )
-                    runtime.enqueue(job_id)
-                    jobs.append(runtime.db.query_one("SELECT * FROM generation_jobs WHERE id = ?", (job_id,)))
-        runtime.db.execute("UPDATE batches SET status = 'generating' WHERE id = ?", (batch_id,))
+        with runtime.mutation_lock:
+            active_job = _active_job_for_batch(runtime.db, batch_id)
+            if active_job:
+                raise HTTPException(status_code=409, detail="Batch already has queued or running jobs")
+            for product in products:
+                row = _product_row_from_db(runtime, product)
+                product_dir = generate_product_package(
+                    row,
+                    runtime._package_dir(batch_id),
+                    batch_id=f"B{batch_id}",
+                    source_base_dir=runtime.storage_root,
+                    copy_source_images=False,
+                )
+                prompt_map = _prompt_map(product_dir)
+                for category in ("showcase", "spec", "howto"):
+                    for slot in range(1, 4 if category == "showcase" else 3):
+                        if _successful_job_for_slot(runtime.db, batch_id, int(product["id"]), category, slot):
+                            continue
+                        prompt = prompt_map[(category, slot)].read_text(encoding="utf-8")
+                        job_id = runtime.db.execute(
+                            """
+                            INSERT INTO generation_jobs
+                              (batch_id, product_pk, category, slot, status, provider_id, model, prompt, config_json)
+                            VALUES (?, ?, ?, ?, 'queued', ?, ?, ?, ?)
+                            """,
+                            (batch_id, product["id"], category, slot, provider_id, model, prompt, json.dumps(config)),
+                        )
+                        runtime.enqueue(job_id)
+                        jobs.append(runtime.db.query_one("SELECT * FROM generation_jobs WHERE id = ?", (job_id,)))
+            if jobs:
+                runtime.db.execute("UPDATE batches SET status = 'generating' WHERE id = ?", (batch_id,))
+            else:
+                runtime.refresh_batch_status(batch_id)
         return {"jobs": jobs}
 
     @app.get("/api/jobs/{job_id}")
@@ -346,24 +375,35 @@ def create_app(storage_root: str | Path | None = None) -> FastAPI:
         old_job = runtime.db.query_one("SELECT * FROM generation_jobs WHERE id = ?", (asset["job_id"],))
         if old_job is None:
             raise HTTPException(status_code=404, detail="Original job not found")
-        job_id = runtime.db.execute(
-            """
-            INSERT INTO generation_jobs
-              (batch_id, product_pk, category, slot, status, provider_id, model, prompt, config_json)
-            VALUES (?, ?, ?, ?, 'queued', ?, ?, ?, ?)
-            """,
-            (
-                old_job["batch_id"],
-                old_job["product_pk"],
+        with runtime.mutation_lock:
+            active_job = _active_job_for_slot(
+                runtime.db,
+                int(old_job["batch_id"]),
+                int(old_job["product_pk"]),
                 old_job["category"],
-                old_job["slot"],
-                old_job["provider_id"],
-                old_job["model"],
-                old_job["prompt"],
-                old_job.get("config_json") or "{}",
-            ),
-        )
-        runtime.enqueue(job_id)
+                int(old_job["slot"]),
+            )
+            if active_job:
+                raise HTTPException(status_code=409, detail="This asset already has a queued or running retry")
+            job_id = runtime.db.execute(
+                """
+                INSERT INTO generation_jobs
+                  (batch_id, product_pk, category, slot, status, provider_id, model, prompt, config_json)
+                VALUES (?, ?, ?, ?, 'queued', ?, ?, ?, ?)
+                """,
+                (
+                    old_job["batch_id"],
+                    old_job["product_pk"],
+                    old_job["category"],
+                    old_job["slot"],
+                    old_job["provider_id"],
+                    old_job["model"],
+                    old_job["prompt"],
+                    old_job.get("config_json") or "{}",
+                ),
+            )
+            runtime.enqueue(job_id)
+            runtime.db.execute("UPDATE batches SET status = 'generating' WHERE id = ?", (old_job["batch_id"],))
         return {"job": runtime.db.query_one("SELECT * FROM generation_jobs WHERE id = ?", (job_id,))}
 
     @app.get("/api/batches/{batch_id}/export")
@@ -394,35 +434,44 @@ def get_batch_payload(runtime: WorkbenchRuntime, batch_id: int) -> dict[str, Any
 
 def _product_row_from_payload(payload: dict[str, Any]) -> ProductRow:
     product_id = str(payload.get("product_id") or "").strip()
-    product_name_en = str(payload.get("product_name_en") or "").strip()
     if not product_id or safe_id(product_id) != product_id:
         raise ValidationError("product_id is required and must use letters, numbers, '-' or '_'")
-    if not product_name_en:
-        raise ValidationError("product_name_en is required")
-    specs = tuple(str(item).strip() for item in payload.get("specs", []) if str(item).strip())
-    steps = tuple(str(item).strip() for item in payload.get("steps", []) if str(item).strip())
+    product_name_en = require_english_text("product_name_en", str(payload.get("product_name_en") or ""))
+    style_pack = str(payload.get("style_pack") or "minimal_white").strip()
+    if not style_pack or safe_id(style_pack) != style_pack:
+        raise ValidationError("style_pack must use letters, numbers, '-' or '_'")
+    units = str(payload.get("units") or "cm").strip().lower()
+    if units not in {"cm", "in"}:
+        raise ValidationError("units must be 'cm' or 'in'")
+    specs = _english_list(payload, "specs")
+    steps = _english_list(payload, "steps")
     if len(specs) < 3:
         raise ValidationError("At least 3 specs are required")
     if len(steps) < 3:
         raise ValidationError("At least 3 steps are required")
     dimensions = payload.get("dimensions") or {}
+    if not isinstance(dimensions, dict):
+        raise ValidationError("dimensions must be an object")
+    personalization_text_en = _optional_str(payload.get("personalization_text_en"))
+    if personalization_text_en is not None:
+        personalization_text_en = require_english_text("personalization_text_en", personalization_text_en)
     return ProductRow(
         product_id=product_id,
         product_name_en=product_name_en,
-        style_pack=str(payload.get("style_pack") or "minimal_white"),
+        style_pack=style_pack,
         output_set="minimum",
-        units=str(payload.get("units") or "cm"),
+        units=units,
         dimensions_l=_optional_str(dimensions.get("l")),
         dimensions_w=_optional_str(dimensions.get("w")),
         dimensions_h=_optional_str(dimensions.get("h")),
         specs=specs,
-        howto_title=str(payload.get("howto_title") or "How to Use"),
+        howto_title=require_english_text("howto_title", str(payload.get("howto_title") or "How to Use")),
         steps=steps,
-        tips=tuple(str(item).strip() for item in payload.get("tips", []) if str(item).strip()),
+        tips=_english_list(payload, "tips"),
         manager_notes=_optional_str(payload.get("manager_notes")),
         must_have_keywords=_optional_str(payload.get("must_have_keywords")),
         must_avoid_elements=_optional_str(payload.get("must_avoid_elements")),
-        personalization_text_en=_optional_str(payload.get("personalization_text_en")),
+        personalization_text_en=personalization_text_en,
     )
 
 
@@ -501,9 +550,75 @@ def _expected_filename(job: dict[str, Any], product: dict[str, Any]) -> str:
     return f"{safe_product_id}_{job['category']}_{int(job['slot']):02d}{suffix}.png"
 
 
+def _versioned_filename(filename: str, version: int) -> str:
+    if version <= 1:
+        return filename
+    path = Path(filename)
+    return f"{path.stem}_v{version}{path.suffix}"
+
+
+def _asset_output_path(product_dir: Path, category: str, expected_filename: str, version: int) -> Path:
+    if version <= 1:
+        return product_dir / category / expected_filename
+    return product_dir / "meta" / "versions" / category / _versioned_filename(expected_filename, version)
+
+
+def _background_output_path(product_dir: Path, category: str, expected_filename: str, version: int) -> Path:
+    return product_dir / "meta" / "backgrounds" / category / _versioned_filename(expected_filename, version)
+
+
 def _job_config(job: dict[str, Any]) -> dict[str, Any]:
     raw = job.get("config_json") or "{}"
     return json.loads(raw) if raw else {}
+
+
+def _active_job_for_batch(db: Database, batch_id: int) -> dict[str, Any] | None:
+    placeholders = ", ".join("?" for _ in ACTIVE_JOB_STATUSES)
+    return db.query_one(
+        f"""
+        SELECT * FROM generation_jobs
+        WHERE batch_id = ? AND status IN ({placeholders})
+        ORDER BY id DESC LIMIT 1
+        """,
+        (batch_id, *sorted(ACTIVE_JOB_STATUSES)),
+    )
+
+
+def _active_job_for_slot(
+    db: Database,
+    batch_id: int,
+    product_pk: int,
+    category: str,
+    slot: int,
+) -> dict[str, Any] | None:
+    placeholders = ", ".join("?" for _ in ACTIVE_JOB_STATUSES)
+    return db.query_one(
+        f"""
+        SELECT * FROM generation_jobs
+        WHERE batch_id = ? AND product_pk = ? AND category = ? AND slot = ?
+          AND status IN ({placeholders})
+        ORDER BY id DESC LIMIT 1
+        """,
+        (batch_id, product_pk, category, slot, *sorted(ACTIVE_JOB_STATUSES)),
+    )
+
+
+def _successful_job_for_slot(
+    db: Database,
+    batch_id: int,
+    product_pk: int,
+    category: str,
+    slot: int,
+) -> dict[str, Any] | None:
+    return db.query_one(
+        """
+        SELECT * FROM generation_jobs
+        WHERE batch_id = ? AND product_pk = ? AND category = ? AND slot = ?
+          AND status = 'succeeded' AND asset_id IS NOT NULL
+        ORDER BY id DESC LIMIT 1
+        """,
+        (batch_id, product_pk, category, slot),
+    )
 
 
 def _safe_provider_config(config: dict[str, Any]) -> dict[str, Any]:
@@ -520,6 +635,43 @@ def _safe_provider_config(config: dict[str, Any]) -> dict[str, Any]:
                 detail="Do not send raw API keys in provider config. Use api_key_env and local environment variables.",
             )
     return config
+
+
+def _ensure_known_style_pack(style_pack: str) -> None:
+    packs = load_style_packs(default_style_pack_path())
+    if style_pack not in packs:
+        available = ", ".join(sorted(packs)) or "(none)"
+        raise HTTPException(status_code=400, detail=f"Unknown style_pack: {style_pack}. Available: {available}")
+
+
+def _english_list(payload: dict[str, Any], field: str) -> tuple[str, ...]:
+    value = payload.get(field, [])
+    if value is None:
+        return ()
+    if not isinstance(value, list):
+        raise ValidationError(f"{field} must be a list")
+    items: list[str] = []
+    for index, item in enumerate(value, start=1):
+        text = str(item).strip()
+        if text:
+            items.append(require_english_text(f"{field}[{index}]", text))
+    return tuple(items)
+
+
+def _validated_image_suffix(filename: str) -> str:
+    suffix = Path(filename).suffix.lower()
+    if suffix not in ALLOWED_SOURCE_IMAGE_SUFFIXES:
+        allowed = ", ".join(sorted(ALLOWED_SOURCE_IMAGE_SUFFIXES))
+        raise HTTPException(status_code=400, detail=f"Unsupported source image type. Allowed suffixes: {allowed}")
+    return suffix
+
+
+def _verify_image_upload(data: bytes) -> None:
+    try:
+        with Image.open(BytesIO(data)) as image:
+            image.verify()
+    except (UnidentifiedImageError, OSError, SyntaxError) as e:
+        raise HTTPException(status_code=400, detail="Uploaded file is not a readable image") from e
 
 
 def _next_asset_version(db: Database, product_pk: int, category: str, filename: str) -> int:
@@ -551,10 +703,30 @@ def _export_batch(runtime: WorkbenchRuntime, batch_id: int) -> Path:
     zip_path = export_dir / f"batch_{batch_id}_approved_assets.zip"
     approved_assets = runtime.db.query_all(
         """
-        SELECT DISTINCT generated_assets.*
-        FROM generated_assets
-        JOIN qa_reviews ON qa_reviews.asset_id = generated_assets.id
-        WHERE generated_assets.batch_id = ? AND qa_reviews.decision = 'pass'
+        WITH latest_reviews AS (
+          SELECT qa_reviews.*
+          FROM qa_reviews
+          WHERE qa_reviews.id = (
+            SELECT MAX(inner_reviews.id)
+            FROM qa_reviews AS inner_reviews
+            WHERE inner_reviews.asset_id = qa_reviews.asset_id
+          )
+        ),
+        approved_assets AS (
+          SELECT generated_assets.*
+          FROM generated_assets
+          JOIN latest_reviews ON latest_reviews.asset_id = generated_assets.id
+          WHERE generated_assets.batch_id = ? AND latest_reviews.decision = 'pass'
+        )
+        SELECT generated_assets.*
+        FROM approved_assets AS generated_assets
+        WHERE generated_assets.version = (
+          SELECT MAX(newer.version)
+          FROM approved_assets AS newer
+          WHERE newer.product_pk = generated_assets.product_pk
+            AND newer.category = generated_assets.category
+            AND newer.filename = generated_assets.filename
+          )
         ORDER BY generated_assets.id
         """,
         (batch_id,),
