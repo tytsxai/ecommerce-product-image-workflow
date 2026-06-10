@@ -23,6 +23,7 @@
 - style pack ID and version
 - exported asset names
 - reviewer decision and reason
+- latest review decision determines export eligibility
 
 ## CLI-supported artifacts
 
@@ -40,3 +41,11 @@ python3 -m mvp_image_workflow validate --out out_mvp --require-images
 ```
 
 In the web workbench, reviewers can pass, reject, or retry each generated asset. Exported ZIP files include only approved assets.
+
+## Web workbench production checks
+
+- Reject duplicate product IDs in a batch before generation.
+- Reject unreadable or unsupported source image uploads before saving them.
+- Do not queue duplicate generation jobs while a batch has active work.
+- Keep retry outputs versioned so approved files are not overwritten by unreviewed retries.
+- Before handoff, export only assets whose latest review decision is `pass`.

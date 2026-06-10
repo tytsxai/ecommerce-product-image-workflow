@@ -42,6 +42,16 @@ Use `EPI_WORKFLOW_HOME=/path/to/local/state` to choose where SQLite data, upload
 
 The main UI uses product language: project, batch, product, style, model, generation, review, export. Manifest files and prompt paths remain available as technical artifacts, but are not required for ordinary operation.
 
+## Runtime Guardrails
+
+- Product IDs are unique per batch. A duplicate SKU is rejected before package files or jobs are created.
+- Product-facing English text is validated with the same ASCII English policy used by the CLI.
+- Source image uploads are limited to readable `.jpg`, `.jpeg`, `.png`, `.webp`, `.tif`, or `.tiff` files up to 10 MB.
+- A batch cannot queue another generation run while any job is already `queued` or `running`.
+- Calling Generate again after all slots have succeeded is idempotent: existing successful slots are skipped, and only missing or failed slots are queued.
+- Retry jobs write versioned files for review, so an unreviewed retry cannot overwrite a previously approved asset.
+- Export uses the latest review decision for each asset and includes the latest approved version for each product/category/output filename.
+
 ## Built-in Providers
 
 - `local_mock`: offline placeholder image generator for demo and tests.
