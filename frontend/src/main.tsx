@@ -120,7 +120,10 @@ function App() {
   async function refreshBatch(batchId: number) {
     const data = await api<BatchPayload>(`/api/batches/${batchId}`);
     setBatch(data);
-    if (!selectedProductId && data.products[0]) setSelectedProductId(data.products[0].id);
+    setSelectedProductId((current) => {
+      if (current && data.products.some((product) => product.id === current)) return current;
+      return data.products[0]?.id ?? null;
+    });
   }
 
   async function addProduct() {
