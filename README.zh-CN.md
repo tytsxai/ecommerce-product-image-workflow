@@ -1,14 +1,31 @@
 # 电商商品图 AI 工作流 / E-commerce Product Image Workflow
 
+面向电商团队的开源 AI 商品图生产工作流。
+
+Open-source AI product photography workflow for e-commerce teams.
+
 [![文档站](https://img.shields.io/badge/文档-GitHub%20Pages-0969da?logo=github)](https://tytsxai.github.io/ecommerce-product-image-workflow/)
 [![版本](https://img.shields.io/github/v/release/tytsxai/ecommerce-product-image-workflow)](https://github.com/tytsxai/ecommerce-product-image-workflow/releases)
 [![许可证](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 
 [English README](README.md) · [在线文档](https://tytsxai.github.io/ecommerce-product-image-workflow/) · [快速开始](docs/en/quickstart.md) · [Web 工作台](docs/en/web-workbench.md) · [MVP CLI](docs/en/mvp-cli.md) · [FAQ](docs/en/faq.md) · [llms.txt](llms.txt)
 
-这是一个面向电商运营、内容团队、创意供应商和自动化工程师的开源项目。它提供一套可落地的 **AI 商品图生产工作流**：用 CSV 输入表、风格包、提示词模板、质检清单、Python CLI 和本地 Web 工作台，把供应商图整理成可生成、可复核、可退回、可导出的商品图片生产包。
+这是一个面向电商运营、内容团队、创意供应商和自动化工程师的开源项目。它提供一套模型无关、可落地的 **AI 商品图生产工作流**：用 CSV 输入表、风格包、提示词模板、质检清单、Python CLI 和本地 Web 工作台，把供应商图和商品资料整理成可生成、可复核、可退回、可导出的商品图片生产包。
 
 English summary: an open-source, model-agnostic workflow and local toolset for e-commerce product image production, supplier image transformation, prompt package generation, QA review, retry, and export.
+
+## 项目事实速览 / At a Glance
+
+| 项目 | 说明 |
+| --- | --- |
+| 项目类型 | 开源工作流规格 + 本地工具集，服务于 AI-assisted e-commerce product image production |
+| 核心用途 | 把 supplier product photos 和商品资料转成 prompt package、可控文字源、QA 记录、可重跑任务和可导出的商品图资产 |
+| 适合用户 | 电商运营、内容团队、创意外包、自动化工程师、构建 AI product photography pipeline 的开发者 |
+| 当前包含 | Python MVP CLI、CSV/JSON 模板、风格包、提示词生产包、本地 FastAPI + SQLite 后端、React/Vite Web 工作台、QA 审核和 ZIP 导出 |
+| 可直接运行的 Provider | `local_mock` 用于离线演示和测试；`generic_http` 用于兼容的图像生成 HTTP API |
+| 不包含 | 模型权重、托管 SaaS 生图服务、marketplace 自动发布、法律或商业授权保证 |
+| 技术栈 | Python 3.9+、FastAPI、SQLite、Pillow、React、Vite、TypeScript、CSV、JSON、Markdown、Pytest |
+| 许可与状态 | MIT；alpha 阶段本地工具，适合验证、扩展和接入生产 Provider 前的参考实现 |
 
 ## 解决什么问题
 
@@ -66,6 +83,12 @@ python3 -m mvp_image_workflow generate \
 python3 -m mvp_image_workflow validate --out out_mvp
 ```
 
+安装后也可以使用命令别名：
+
+```bash
+ecommerce-image-workflow inspect --input examples/products_minimum.csv
+```
+
 生成结果包括：
 
 - `batch_manifest.json`：批次级记录。
@@ -98,6 +121,8 @@ http://127.0.0.1:8787
 EPI_WORKFLOW_HOME=/path/to/local/state python3 -m ecommerce_product_image_workflow.web
 ```
 
+如果只是本地体验，不需要 API Key，Web 工作台里选择 `local_mock` Provider 即可。已有兼容生图接口时，再使用 `generic_http`，它默认期望接口返回 base64 图片字段。
+
 ## 典型使用场景
 
 - 供应商图改造电商主图。
@@ -126,6 +151,8 @@ EPI_WORKFLOW_HOME=/path/to/local/state python3 -m ecommerce_product_image_workfl
 - [FAQ](docs/en/faq.md)
 - [中文文档导航](docs/zh-CN/README.md)
 - [AI 搜索与 Agent 读取入口 llms.txt](llms.txt)
+
+面向 AI 搜索引擎和 coding agent 的最短事实卡是 [llms.txt](llms.txt)，里面包含项目标准摘要、可执行命令、适用场景、可引用页面和明确限制。
 
 ## 搜索关键词
 

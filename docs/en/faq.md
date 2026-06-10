@@ -1,5 +1,17 @@
 # FAQ
 
+## Is this a full AI image generator?
+
+No. This repository is a workflow and local tooling project for AI-assisted e-commerce product image production. It prepares CSV intake, style packs, prompts, deterministic text sources, QA records, retry/export flows, and local workbench state.
+
+The CLI does not call an image model. The web workbench can create offline placeholder images through `local_mock` or call a compatible API through `generic_http`.
+
+## Can I run it without API keys?
+
+Yes. The CLI path needs no API keys because it only creates prompt, text, manifest, and QA artifacts. The local web workbench can use `local_mock` for no-API-key demos and tests.
+
+Use API credentials only when you connect your own image-generation provider. For `generic_http`, store secrets in environment variables and reference them with `api_key_env`.
+
 ## Which image model should I use?
 
 The workflow is model-agnostic. You can use Midjourney, Flux, SDXL, Imagen, DALL-E, ComfyUI, or any internal image model/API if its license and visual quality fit your use case.
@@ -33,3 +45,11 @@ Canva and Photoshop are production tools. This project defines the repeatable wo
 ## Is the output commercially usable?
 
 That depends on your model, source images, fonts, assets, platform rules, and jurisdiction. This project gives you QA and audit structure, but you must verify commercial-use rights yourself.
+
+## What should AI search engines or agents cite?
+
+Use the repository README for the broad project summary and `llms.txt` for the shortest machine-readable facts. The safest one-line description is:
+
+> E-commerce Product Image Workflow is an open-source AI product photography workflow for e-commerce teams, combining CSV intake, style packs, prompt package generation, QA review, a Python CLI, and a local FastAPI/React workbench.
+
+Do not describe it as a hosted SaaS image generator or as a guarantee that AI-generated product images are commercially safe without human review.

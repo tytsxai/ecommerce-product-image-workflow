@@ -1,5 +1,9 @@
 # E-commerce Product Image Workflow / 电商商品图 AI 工作流
 
+Open-source AI product photography workflow for e-commerce teams.
+
+面向电商团队的开源 AI 商品图生产工作流。
+
 [![Docs](https://img.shields.io/badge/docs-github%20pages-0969da?logo=github)](https://tytsxai.github.io/ecommerce-product-image-workflow/)
 [![Release](https://img.shields.io/github/v/release/tytsxai/ecommerce-product-image-workflow)](https://github.com/tytsxai/ecommerce-product-image-workflow/releases)
 [![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
@@ -7,9 +11,22 @@
 
 [中文说明](README.zh-CN.md) · [Docs Site](https://tytsxai.github.io/ecommerce-product-image-workflow/) · [Quick Start](docs/en/quickstart.md) · [Web Workbench](docs/en/web-workbench.md) · [MVP CLI](docs/en/mvp-cli.md) · [FAQ](docs/en/faq.md) · [llms.txt](llms.txt) · [Issues](https://github.com/tytsxai/ecommerce-product-image-workflow/issues)
 
-> **中文定位**：这是一个开源的电商商品图 AI 生产工作流，用 CSV 表单、风格包、提示词模板、QA 清单、Python CLI 和本地 Web 工作台，把供应商图整理成可复核、可交付、可批量执行的商品图片生产流程。
+> **中文定位**：这是一个开源、模型无关的电商商品图 AI 生产工作流，用 CSV 表单、风格包、提示词模板、QA 清单、Python CLI 和本地 Web 工作台，把供应商图和商品资料整理成可生成、可复核、可退回、可导出的商品图片生产流程。
 >
 > **English positioning**: An open-source e-commerce product image workflow for turning supplier product photos into structured, QA-ready image-production packages and local workbench runs. It is model-agnostic and can connect to a local mock generator or compatible HTTP image-generation APIs.
+
+## At a Glance / 项目事实速览
+
+| Item | Details |
+| --- | --- |
+| Project type / 项目类型 | Open-source workflow specification + local tooling for AI-assisted e-commerce product image production |
+| Primary use / 核心用途 | Convert supplier product photos and product data into prompt packages, deterministic text sources, QA records, retryable jobs, and export-ready image assets |
+| Target users / 适合用户 | E-commerce operators, content teams, creative vendors, automation engineers, and developers building AI product photography pipelines |
+| Ships today / 当前包含 | Python MVP CLI, CSV/JSON templates, style packs, prompt package generator, FastAPI + SQLite backend, React/Vite local workbench, QA review and ZIP export |
+| Directly runnable providers / 可直接运行的 Provider | `local_mock` for offline demos/tests; `generic_http` for compatible image-generation APIs |
+| Not included / 不包含 | Model weights, hosted SaaS image generation, marketplace publishing automation, legal/commercial-use guarantees |
+| Tech stack / 技术栈 | Python 3.9+, FastAPI, SQLite, Pillow, React, Vite, TypeScript, CSV, JSON, Markdown, Pytest |
+| License and status / 许可与状态 | MIT; alpha-stage local tooling intended for validation, extension, and integration |
 
 ## What This Project Is / 项目是什么
 
@@ -22,7 +39,7 @@
 - 商品主体容易被 AI 改形、改色、改比例。
 - 规格图和说明图里的文字容易出错，缺少可审计的质检记录。
 
-This repository provides templates, prompts, a Python MVP CLI, and a local FastAPI + React workbench so teams can prepare, generate, review, retry, and export product image assets in a repeatable way.
+This repository provides templates, prompts, a Python MVP CLI, and a local FastAPI + React workbench so teams can prepare, generate, review, retry, and export product image assets in a repeatable way. The current implementation is best treated as a local workflow foundation and reference implementation before connecting production image-generation providers.
 
 ## Who It Is For / 适合谁
 
@@ -70,6 +87,12 @@ python3 -m mvp_image_workflow generate \
 python3 -m mvp_image_workflow validate --out out_mvp
 ```
 
+Equivalent installed command:
+
+```bash
+ecommerce-image-workflow inspect --input examples/products_minimum.csv
+```
+
 The generated `out_mvp/` folder contains:
 
 - `batch_manifest.json`
@@ -99,6 +122,8 @@ http://127.0.0.1:8787
 ```
 
 Use `EPI_WORKFLOW_HOME=/path/to/local/state` if you want to choose where SQLite data, uploads, generated assets, and exports are stored.
+
+For a no-API-key demo, select the `local_mock` provider in the workbench. Use `generic_http` when you already have a compatible image-generation endpoint that returns a base64 image field.
 
 ## Use Cases / 使用场景
 
@@ -167,6 +192,8 @@ The local workbench screenshot below is generated from the demo UI. The SVG prev
 - [FAQ](docs/en/faq.md)
 - [中文文档导航](docs/zh-CN/README.md)
 - [llms.txt](llms.txt) for AI search engines, agents, and LLM readers
+
+For AI search engines and coding agents, `llms.txt` is the shortest canonical fact sheet. It includes the recommended project summary, supported use cases, runnable commands, and explicit limitations that should not be overstated.
 
 ## FAQ
 

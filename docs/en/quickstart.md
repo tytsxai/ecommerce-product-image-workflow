@@ -7,6 +7,13 @@ This guide helps a new user run the real local paths in this repository:
 
 The project is model-agnostic. The CLI prepares production artifacts; it does not call an image model. The web workbench can use the built-in `local_mock` provider for demos or `generic_http` for a compatible image-generation API.
 
+## Prerequisites
+
+- Python 3.9 or newer.
+- Node.js and npm only if you want to build the React/Vite web workbench.
+- No API key is needed for the CLI or the `local_mock` provider.
+- A compatible HTTP image-generation endpoint is needed only when using `generic_http`.
+
 ## 1) Choose Your Path
 
 Use the CLI when you want a reproducible folder package for each product before image generation.
@@ -46,12 +53,20 @@ Install the package from the repository root:
 python3 -m pip install -e .
 ```
 
+This also installs the console script:
+
+```bash
+ecommerce-image-workflow --help
+```
+
 Inspect the sample CSV and style pack coverage:
 
 ```bash
 python3 -m mvp_image_workflow inspect \
   --input examples/products_minimum.csv
 ```
+
+Expected sample output includes one product row, the `minimum` output set, and the `minimal_white` style pack.
 
 Generate a batch package:
 
@@ -117,6 +132,18 @@ Optional local state path:
 
 ```bash
 EPI_WORKFLOW_HOME=/path/to/local/state python3 -m ecommerce_product_image_workflow.web
+```
+
+Optional no-browser startup for scripted runs:
+
+```bash
+EPI_NO_BROWSER=1 python3 -m ecommerce_product_image_workflow.web
+```
+
+You can also use the installed launcher:
+
+```bash
+ecommerce-image-workbench
 ```
 
 ## 5) Validate and Export
