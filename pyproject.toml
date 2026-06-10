@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "ecommerce-product-image-workflow"
 version = "0.2.0"
-description = "Open-source AI e-commerce product image workflow with CSV templates, prompt packages, QA review, a Python CLI, and a local FastAPI/React workbench."
+description = "Open-source, model-agnostic AI product photography workflow for e-commerce teams: CSV intake, style packs, prompt packages, QA review, a Python CLI, and a local FastAPI/React workbench."
 readme = "README.md"
 requires-python = ">=3.9"
 license = { text = "MIT" }
@@ -15,16 +15,24 @@ authors = [
 keywords = [
   "ecommerce",
   "ecommerce-product-images",
+  "e-commerce-product-image-workflow",
   "ai-images",
   "ai-image-generation",
   "ai-product-photography",
+  "ai-product-image-workflow",
   "product-photography",
   "supplier-images",
+  "supplier-image-transformation",
+  "product-image-qa",
+  "qa-checklist",
+  "batch-manifest",
   "workflow",
   "workflow-automation",
+  "local-workbench",
   "prompt-engineering",
   "quality-assurance",
   "fastapi",
+  "fastapi-react",
   "react"
 ]
 classifiers = [
@@ -39,13 +47,16 @@ classifiers = [
   "Programming Language :: Python :: 3.12",
   "Programming Language :: Python :: 3.13",
   "Topic :: Multimedia :: Graphics",
+  "Topic :: Scientific/Engineering :: Image Processing",
   "Topic :: Office/Business"
 ]
 
 [project.urls]
 Homepage = "https://github.com/tytsxai/ecommerce-product-image-workflow"
 Documentation = "https://tytsxai.github.io/ecommerce-product-image-workflow/"
+Repository = "https://github.com/tytsxai/ecommerce-product-image-workflow"
 Issues = "https://github.com/tytsxai/ecommerce-product-image-workflow/issues"
+Changelog = "https://github.com/tytsxai/ecommerce-product-image-workflow/blob/main/CHANGELOG.md"
 
 [project.scripts]
 ecommerce-image-workflow = "mvp_image_workflow.cli:main"
